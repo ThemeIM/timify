@@ -11,9 +11,18 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 With Timify, let your audience know about publish date, publish time, and reading time of your articles. You can also customize each setting according to your requirements. Add a shortcode that works with postfix and label. And everything is plain and simple. 
 
 == Description ==
-Timify is your one-stop solution for informing your readers about the publish date, publish time, and reading time of an article. To maintain a proper engagement with your audience, it is important to add the last updated time of your post or page in WordPress. Google prefers articles that include update dates rather than publish dates. Timify will automatically generate the last update time of your articles. And you don't have to write a single code. This makes it a lot easier to handle everything about timing. Furthermore, you can also edit the "Last Update" word according to your preference. 
-And that's not all, Timify allows you to add an estimating reading time for your WordPress blogs. The estimating reading time will automatically appear at the beginning of your article as soon as you activate the plugin. You can also deactivate the reading time from your dashboard. Labels and postfixes can be edited from the "Reading Time" section inside the settings. 
-Timify allows you to have absolute control over the reading time placement. Insert and customize reading time into any post or page by using the [timify-post-reading-time] shortcode. This shortcode is also compatible with label and postfix values. But, that's optional and up to you to decide.  
+Timify is your one-stop solution for informing your readers about the publish date, publish time, and reading time of an article. 
+To maintain a proper engagement with your audience, it is important to add the last updated time of your post or page in WordPress. 
+Google prefers articles that include update dates rather than publish dates. Timify will automatically generate the last update time of your articles. 
+And you don't have to write a single code. This makes it a lot easier to handle everything about timing. 
+Furthermore, you can also edit the "Last Update" word according to your preference. 
+
+And that's not all, Timify allows you to add an estimating reading time for your WordPress blogs. 
+The estimating reading time will automatically appear at the beginning of your article as soon as you activate the plugin. 
+You can also deactivate the reading time from your dashboard. Labels and postfixes can be edited from the "Reading Time" section inside the settings. 
+Timify allows you to have absolute control over the reading time placement. 
+Insert and customize reading time into any post or page by using the [timify-post-reading-time] shortcode. 
+This shortcode is also compatible with label and postfix values. But, that's optional and up to you to decide.  
 
 Features:
 1. Apply Date Time Format ( Date Time Filtering Purpose in published date)
