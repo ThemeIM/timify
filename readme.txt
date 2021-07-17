@@ -1,5 +1,5 @@
 === Timify ===
-Contributors: ThemeIM
+Contributors: ThemeIM, golamrobbani29
 Tags: date, time, read, reading time, post date, post modified
 Requires at least: 4.0
 Tested up to: 5.7.2
