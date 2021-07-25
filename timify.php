@@ -162,7 +162,6 @@ final class Timify {
 
 		require_once( TIMIFY_INCLUDES . '/frontend/class.frontend.php' );
 		require_once( TIMIFY_INCLUDES . '/frontend/class.shortcode.php' );
-		//require_once( TIMIFY_INCLUDES . '/frontend/test.php' );
 
 		if ( $this->is_request( 'admin' ) ) {
             require_once( TIMIFY_INCLUDES . '/admin/admin-init.php' );
