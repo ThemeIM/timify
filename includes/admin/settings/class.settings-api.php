@@ -384,7 +384,7 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 		function callback_wysiwyg( $args ) {
 			$value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 			$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : '500px';
-			echo '<div style="max-width: ' . $size . ';">';
+			echo '<div style="max-width: ' . esc_attr($size) . ';">';
 			$editor_settings = array(
 				'teeny'         => true,
 				'textarea_name' => $args['section'] . '[' . $args['id'] . ']',
