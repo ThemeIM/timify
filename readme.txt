@@ -2,7 +2,7 @@
 Contributors: ThemeIM, golamrobbani29
 Tags: date, time, read, reading time, post date, post modified
 Requires at least: 4.0
-Tested up to: 5.7.2
+Tested up to: 5.8
 Requires PHP: 5.6.0
 Stable tag: 1.0.0
 License: GPLv2 or later
