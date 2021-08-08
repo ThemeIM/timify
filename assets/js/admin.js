@@ -10,25 +10,31 @@
   
           $('#timify_settings .rt_shortcode_content').hide();
           $('#timify_settings .lm_shortcode_content').hide();
-  
-       
+          $('#timify_settings .lm_post_date_selector').hide();
+          
           if(rtDSelected=='shortcode_content'){
               $('#timify_settings .rt_'+rtDSelected).show();
           }
           if(lmDSelected=='shortcode_content'){
               $('#timify_settings .lm_'+lmDSelected).show();
           }
-          
+          if(lmDSelected=='replace_original'){
+            $('#timify_settings .lm_post_date_selector').show();
+          }
   
           $(lmSelector).on('change', function() {
-              var lmSelectedVal=$(this).find('option:selected').val();
-              if(lmSelectedVal=='shortcode_content'){
-                  $('#timify_settings .lm_'+lmSelectedVal).show();
-              }else{
-                  $('#timify_settings .lm_shortcode_content').hide();
-              }
+            var lmSelectedVal=$(this).find('option:selected').val();
+            if(lmSelectedVal=='shortcode_content'){
+                $('#timify_settings .lm_'+lmSelectedVal).show();
+            }else{
+                $('#timify_settings .lm_shortcode_content').hide();
+            }
+            if(lmSelectedVal=='replace_original'){
+                $('#timify_settings .lm_post_date_selector').show();
+            }else{
+                $('#timify_settings .lm_post_date_selector').hide();
+            }
           });
-  
   
           $(rtSelector).on('change', function() {
               var rtSelectedVal=$(this).find('option:selected').val();

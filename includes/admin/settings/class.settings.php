@@ -126,6 +126,14 @@ if( !class_exists('Timify_Option') ):
 					),
 
 					array(
+						'name'  => 'lm_post_date_selector',
+						'label' => __( 'Enter CSS Selector of Post Date:', 'timify' ),
+						'type'  => 'text',
+						'desc'=> __('This field for replace published date css selector. If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
+						'default'=>'.posted-on .entry-date'
+					),
+
+					array(
 						'name'  => 'lm_alignment',
 						'label' => __( 'Last Modified Before Content Alignment:', 'timify' ),
 						'type'  => 'select',
@@ -134,14 +142,6 @@ if( !class_exists('Timify_Option') ):
 							'center'=>__('Center','timify'),
 							'right'=>__('Right','timify')
 						), 
-					),
-
-					array(
-						'name'  => 'lm_post_date_selector',
-						'label' => __( 'Enter CSS Selector of Post Date:', 'timify' ),
-						'type'  => 'text',
-						'desc'=> __('This field for replace published date css selector. If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
-						'default'=>'.posted-on .entry-date'
 					),
 
 					array(

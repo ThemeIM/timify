@@ -82,8 +82,19 @@ if( !class_exists('Timify_Frontend') ):
 			//last modified and reading time insert post content
 			add_filter( 'the_content', array($this,'lm_rt_display_info'), apply_filters( 'timify_display_priority', 5 ) );
 			add_action( 'wp_footer', array($this,'lm_published_date_replace'), 99 );
+			add_action( 'wp_footer', array($this,'rt_insert_in_post_mate'), 99 );
 
 				
+		}
+
+		public function rt_insert_in_post_mate(){
+			?>
+
+			<script type="text/javascript">
+				alert("golam robbani");
+			</script>
+
+			<?php
 		}
 
 		/**
