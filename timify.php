@@ -4,8 +4,8 @@
  * Plugin URI:  https://www.themeim.com/
  * Description: Generate blogs following the latest trend with Timify. Apply post date, post time, and reading time on your blogs along with modifying them. And it is so easy to use
  * Version:     1.0.0
- * Author:      Golam Robbani
- * Author URI:  https://themeim.com/forums/users/golam-robbani/
+ * Author:      ThemeIM
+ * Author URI:  https://themeim.com/
  * License:     GPLv2+ 
  * Text Domain: timify
  * Domain Path: /languages/
