@@ -184,7 +184,8 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Reading Time Display Method', 'timify' ),
 						'type'  => 'select',
 						'options'=> array( 
-							'before_content' => __( 'Before Content', 'timify' ), 
+							'before_content' => __( 'Before Content', 'timify' ),
+							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'shortcode_content' => __( 'ShortCode', 'timify' ),
 						)
 					),
@@ -194,6 +195,14 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Copy Reading Time Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
 						'desc'  => '[timify-post-reading-time]'
+					),
+
+					array(
+						'name'  => 'rt_post_meta_selector',
+						'label' => __( 'CSS Selector of Reading Time Inside Post Meta:', 'timify' ),
+						'type'  => 'text',
+						'desc'=> __('This field for reading time inside post meta . If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
+						'default'=>'.post-meta-wrapper .post-meta'
 					),
 
 					array(

@@ -88,6 +88,33 @@ if( !class_exists('Timify_Frontend') ):
 		}
 
 		public function rt_insert_in_post_mate(){
+			global $post;
+			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
+
+			if ( $rt_display_position !== 'inside_post_meta' ) {
+				return;
+			}
+
+			if ( ! $this->is_enabled( 'rt_enable' ) ) {
+				return;
+			}
+
+			$post_id = $post->ID;
+			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
+			if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
+				return;
+			}
+
+			$disable = $this->get_meta( $post_id, '_lm_disable' );
+			if ( ! empty( $disable ) && $disable == 'yes' ) {
+				return;
+			}
+
+			// $selectors = $this->get_data( 'lm_post_date_selector' );
+			// if (  empty( $selectors ) ) {
+			// 	return;
+			// }
+
 			?>
 
 			<script type="text/javascript">
