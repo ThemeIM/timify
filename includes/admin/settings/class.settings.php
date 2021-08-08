@@ -37,7 +37,7 @@ if( !class_exists('Timify_Option') ):
 				),
 				// array(
 				// 	'id'    => 'timify_section_two',
-				// 	'title' => __( 'Timify Settings Section Two', 'timify' )
+				// 	'title' => __( 'Timify Style', 'timify' )
 				// )
 			);
 
