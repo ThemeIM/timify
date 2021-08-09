@@ -1,6 +1,6 @@
 === Timify ===
-Contributors: ThemeIM, golamrobbani29
-Tags: date, time, read, reading time, post date, post modified
+Contributors: ThemeIM, golam523
+Tags: reading time, last-modified, modified time, word count, date
 Requires at least: 4.0
 Tested up to: 5.8
 Requires PHP: 5.6.0
