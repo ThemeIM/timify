@@ -12,6 +12,7 @@
         $('#timify_settings .lm_shortcode_content').hide();
         $('#timify_settings .lm_post_date_selector').hide();
         $('#timify_settings .rt_post_meta_selector').hide();
+        $('#timify_settings .lm_post_meta_selector').hide();
         
         if(rtDSelected=='shortcode_content'){
             $('#timify_settings .rt_'+rtDSelected).show();
@@ -24,6 +25,9 @@
         }
         if(lmDSelected=='replace_original'){
             $('#timify_settings .lm_post_date_selector').show();
+        }
+        if(lmDSelected=='inside_post_meta'){
+            $('#timify_settings .lm_post_meta_selector').show();
         }
   
         $(lmSelector).on('change', function() {
@@ -38,6 +42,12 @@
             }else{
                 $('#timify_settings .lm_post_date_selector').hide();
             }
+            if(lmSelectedVal=='inside_post_meta'){
+                $('#timify_settings .lm_post_meta_selector').show();
+            }else{
+                $('#timify_settings .lm_post_meta_selector').hide();
+            }
+
         });
   
         $(rtSelector).on('change', function() {

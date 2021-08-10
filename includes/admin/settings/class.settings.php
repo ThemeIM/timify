@@ -35,10 +35,10 @@ if( !class_exists('Timify_Option') ):
 					'id'     => 'timify_settings',
 					'title'  => __( 'Timify Settings', 'timify' ),
 				),
-				// array(
-				// 	'id'    => 'timify_section_two',
-				// 	'title' => __( 'Timify Style', 'timify' )
-				// )
+				array(
+					'id'    => 'timify_word_settings',
+					'title' => __( 'Post WordCount Section', 'timify' ),
+				)
 			);
 
 			return $sections;
@@ -113,6 +113,7 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'select',
 						'options'=> array( 
 							'before_content' => __( 'Before Content', 'timify' ), 
+							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'replace_original'=>__('Replace Published Date','timify'),
 							'shortcode_content'=>__('Shortcode','timify')
 						), 
@@ -123,6 +124,14 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Copy Last Modified Date Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
 						'desc'  => '[timify-last-modified-date]'
+					),
+
+					array(
+						'name'  => 'lm_post_meta_selector',
+						'label' => __( 'CSS Selector of Last Update Date Inside Post Meta:', 'timify' ),
+						'type'  => 'text',
+						'desc'=> __('This field for last update date inside post meta . If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
+						'default'=>'.post-meta-wrapper .post-meta .post-date'
 					),
 
 					array(
@@ -223,9 +232,58 @@ if( !class_exists('Timify_Option') ):
 						'default'=> array('post')
 					),
 
+				),
 
+				'timify_word_settings'=>array(
+					array(
+						'name'  => 'wc_enable',
+						'label' => __( 'Words Count Enable', 'timify' ),
+						'type'  => 'checkbox',
+						'default'=> 'on'
+					),
 
+					array(
+						'name'  => 'wc_label',
+						'label' => __( 'Words Count Label', 'timify' ),
+						'type'  => 'text',
+						'default'=>__('Words Count:','timify')
+					),
 
+					array(
+						'name'  => 'wc_postfix',
+						'label' => __( 'Words Count Postfix', 'timify' ),
+						'type'  => 'text',
+						'default'=>__('Words','timify')
+					),
+
+					array(
+						'name'  => 'wc_display_method',
+						'label' => __( 'Words Count Display Method', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'before_content' => __( 'Before Content', 'timify' ),
+							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
+							'shortcode_content' => __( 'ShortCode', 'timify' ),
+						)
+					),
+
+					array(
+						'name'  => 'wc_shortcode_content',
+						'label' => __( 'Copy Words Count Shortcode Enter the Post Content', 'timify' ),
+						'type'  => 'html',
+						'desc'  => '[timify-post-words-count]'
+					),
+
+					array(
+						'name'  => 'wc_alignment',
+						'label' => __( 'Words Count Before Content Alignment:', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'left' => __( 'Left', 'timify' ), 
+							'center'=>__('Center','timify'),
+							'right'=>__('Right','timify')
+						), 
+					),
 				)
 
 

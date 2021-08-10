@@ -20,6 +20,7 @@ if( !class_exists('Timify_Frontend') ):
 		private $date_format;
 
 		public $reading_time;
+		public $words_count;
 
 		public $allwoed_html_kses = array(
 			'br'     => array(),
@@ -53,14 +54,60 @@ if( !class_exists('Timify_Frontend') ):
 				'rt_display_method' => 'before_content',
 				'rt_alignment'		=> 'left',
 				'lm_rt_post_types'	=> array('post'),
+				'wc_enable'			=> 'on',
+				'wc_label'			=> 'Post Words:',
+				'wc_postfix'		=> 'Words',
+				'wc_alignment'		=> 'left',
 
 			);
 
 			$default_sets = apply_filters( 'timify_modify_default_sets', $default_sets );
 			$this->settings = get_option( 'timify_settings', $default_sets );
 			$this->settings = wp_parse_args( $this->settings, $default_sets);
-			$list_filter_array = array();
+			$this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $default_sets);
 
+			// $list_filter_array = array();
+			// if ( isset($this->settings['active']['date']) ):
+			// 	$list_filter_array = array_merge( $list_filter_array, array( 'the_date', 'get_the_date' ) );
+			// endif;
+			// if ( isset($this->settings['active']['time']) ) :
+			// 	$list_filter_array = array_merge( $list_filter_array, array( 'get_the_time', 'the_time' ) );
+			// endif;
+			// if ( isset($this->settings['active']['modified_date']) ) :
+			// 	$list_filter_array = array_merge( $list_filter_array, array( 'get_the_modified_date', 'the_modified_date' ) );
+			// endif;
+			// if ( isset($this->settings['active']['modified_time']) ) :
+			// 	$list_filter_array = array_merge( $list_filter_array, array( 'get_the_modified_time', 'the_modified_time' ) );
+			// endif;
+			// $filterlists = apply_filters( 'timify_date_filters',$list_filter_array );
+
+			// foreach ( $filterlists as $filter ) :
+			// 	add_filter( $filter, array( &$this, 'convert_date_time_ago' ), 10, 2 );
+			// endforeach;
+
+            add_action('loop_start', array($this,'render_loop_start'), 50);
+
+			//last modified and reading time insert post content
+			add_filter( 'the_content', array($this,'lm_rt_display_info'), apply_filters( 'timify_display_priority', 5 ) );
+			add_action( 'wp_footer', array($this,'lm_published_date_replace'), 99 );
+			//add_filter( 'wp_footer', array($this,'lm_rt_insert_in_post_mate'), 99 );
+
+			
+            
+
+            //diplay after date filter in post meta last modified date and reading time and view and word count
+			// $post_meta_date_filters =apply_filters( 'timify_post_meta_date_filters',array( 'the_date', 'get_the_date' ) );
+			// foreach($post_meta_date_filters as $post_meta_date_filter):
+			// 	add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
+			// endforeach;
+			
+
+				
+		}
+
+		public function render_loop_start(){
+
+			$list_filter_array = array();
 			if ( isset($this->settings['active']['date']) ):
 				$list_filter_array = array_merge( $list_filter_array, array( 'the_date', 'get_the_date' ) );
 			endif;
@@ -73,31 +120,90 @@ if( !class_exists('Timify_Frontend') ):
 			if ( isset($this->settings['active']['modified_time']) ) :
 				$list_filter_array = array_merge( $list_filter_array, array( 'get_the_modified_time', 'the_modified_time' ) );
 			endif;
-			$filterlists = apply_filters( 'timify_filters',$list_filter_array );
+			$filterlists = apply_filters( 'timify_date_filters',$list_filter_array );
 
 			foreach ( $filterlists as $filter ) :
 				add_filter( $filter, array( &$this, 'convert_date_time_ago' ), 10, 2 );
 			endforeach;
 
-			//last modified and reading time insert post content
-			add_filter( 'the_content', array($this,'lm_rt_display_info'), apply_filters( 'timify_display_priority', 5 ) );
-			add_action( 'wp_footer', array($this,'lm_published_date_replace'), 99 );
-			add_action( 'wp_footer', array($this,'rt_insert_in_post_mate'), 99 );
 
-				
+			$post_meta_date_filters =apply_filters( 'timify_post_meta_date_filters',array( 'the_date', 'get_the_date' ) );
+			foreach($post_meta_date_filters as $post_meta_date_filter):
+				add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
+			endforeach;
+			
 		}
 
-		public function rt_insert_in_post_mate(){
+		public function lm_rt_insert_after_date_in_post_mate($original_time){
+			global $post;
+			$reading_time = $last_modified_date = '';
+			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
+			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
+
+			$post_id = $post->ID;
+			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
+			if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
+				return $original_time;
+			}
+
+			$disable = $this->get_meta( $post_id, '_lm_disable' );
+			if ( ! empty( $disable ) && $disable == 'yes' ) {
+				return $original_time;
+			}
+
+			$rt_post_meta_selector = $this->get_data( 'rt_post_meta_selector' );
+			if (  empty( $rt_post_meta_selector ) ) {
+				return $original_time;
+			}
+
+			$lm_post_meta_selector = $this->get_data( 'lm_post_meta_selector' );
+			if (  empty( $lm_post_meta_selector ) ) {
+				return $original_time;
+			}
+
+			
+			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'inside_post_meta' ]) ) { 
+
+				$modified_timestamp = get_post_modified_time( 'U');
+				$time = current_time( 'U' );
+				$ago_label =  $this->settings['ago_label'];
+				$timestamp = human_time_diff( $modified_timestamp, $time ).' '.$ago_label;
+				//time filter hook
+				$last_modified_date = apply_filters( 'timify_post_formatted_date', $timestamp, get_the_ID() );
+                
+			}
+			
+            
+			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'inside_post_meta' ]) ) { 
+
+				$post_id = $post->ID;
+				$this->rt_calculation( $post_id, $this->settings );
+
+				$postfix          = $this->settings['rt_postfix'];
+				$postfixs         = $this->settings['rt_postfixs'];
+				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
+				$reading_time	  = $this->reading_time.' '.$cal_postfix;
+
+
+			}
+
+
+			return $original_time .' '.$last_modified_date.' '.$reading_time;
+
+		}
+
+		public function lm_rt_insert_in_post_mate() {
 			global $post;
 			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
+			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
 
-			if ( $rt_display_position !== 'inside_post_meta' ) {
-				return;
-			}
+			// if ( $rt_display_position !== 'inside_post_meta' ) {
+			// 	return;
+			// }
 
-			if ( ! $this->is_enabled( 'rt_enable' ) ) {
-				return;
-			}
+			// if ( ! $this->is_enabled( 'rt_enable' ) ) {
+			// 	return;
+			// }
 
 			$post_id = $post->ID;
 			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
@@ -110,19 +216,85 @@ if( !class_exists('Timify_Frontend') ):
 				return;
 			}
 
-			// $selectors = $this->get_data( 'lm_post_date_selector' );
-			// if (  empty( $selectors ) ) {
-			// 	return;
-			// }
+			$rt_post_meta_selector = $this->get_data( 'rt_post_meta_selector' );
+			if (  empty( $rt_post_meta_selector ) ) {
+				return;
+			}
 
-			?>
+			$lm_post_meta_selector = $this->get_data( 'lm_post_meta_selector' );
+			if (  empty( $lm_post_meta_selector ) ) {
+				return;
+			}
+			
 
-			<script type="text/javascript">
-				alert("golam robbani");
-			</script>
+			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'inside_post_meta' ]) ) { 
+
+				$post_id = $post->ID;
+				$this->rt_calculation( $post_id, $this->settings );
+
+				$postfix          = $this->settings['rt_postfix'];
+				$postfixs         = $this->settings['rt_postfixs'];
+				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
+				$reading_time		=$this->reading_time.' '.$cal_postfix;
+				$template ='<li class="timify_lm_info">'.$reading_time.'</li>';
+				$rt_post_meta_selector = preg_replace( "/\r|\n/", '', wp_kses_post( $rt_post_meta_selector ) ); 
+                
+				//echo $reading_time;
+				?>
+
+				<script type="text/javascript">
+					document.addEventListener('DOMContentLoaded', (event) => {
+						var selector = document.querySelectorAll( '<?php echo wp_kses_post($rt_post_meta_selector); ?>' );
+						if ( selector.length > 1 ) {
+							for(var index=0; index < selector.length; index++){
+								selector[index].insertAdjacentHTML('afterend', '<?php echo wp_kses_post($template); ?>');
+							}
+						}else if( selector.length == 1 ){
+							selector[0].insertAdjacentHTML('afterend', '<?php echo wp_kses_post($template); ?>');
+						}else {
+							alert("css selector not found");
+						}
+					});
+				</script>
+
+			<?php } 
+
+			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'inside_post_meta' ]) ) { 
+
+				$modified_timestamp = get_post_modified_time( 'U', false, $post );
+				$time = current_time( 'U' );
+				$ago_label =  $this->settings['ago_label'];
+				$timestamp = human_time_diff( $modified_timestamp, $time ).' '.$ago_label;
+				//time filter hook
+				$timestamp = apply_filters( 'timify_post_formatted_date', $timestamp, get_the_ID() );
+
+				$template ='<li class="timify_lm_info">'.$timestamp.'</li>';
+				$lm_post_meta_selector = preg_replace( "/\r|\n/", '', wp_kses_post( $lm_post_meta_selector ) ); 
+
+				?>
+
+				<script type="text/javascript">
+					document.addEventListener('DOMContentLoaded', (event) => {
+						var selector = document.querySelectorAll( '<?php echo wp_kses_post($lm_post_meta_selector); ?>' );
+						if ( selector.length > 1 ) {
+							for(var index=0; index < selector.length; index++){
+								selector[index].insertAdjacentHTML('afterend', '<?php echo wp_kses_post($template); ?>');
+							}
+						}else if( selector.length == 1 ){
+							selector[0].insertAdjacentHTML('afterend', '<?php echo wp_kses_post($template); ?>');
+						}else {
+							alert("css selector not found");
+						}
+					});
+				</script>
+
+			<?php } ?>
+
+			
 
 			<?php
 		}
+		
 
 		/**
 		 * Published date to modified Date replace using jQuery.
@@ -168,7 +340,7 @@ if( !class_exists('Timify_Frontend') ):
 			//time filter hook
 			$timestamp = apply_filters( 'timify_post_formatted_date', $timestamp, get_the_ID() );
 
-			$template ='<span class="timify-lm-rlast-modified-info">'.$timestamp.'</span>';
+			$template ='<span class="timify_lm_info">'.$timestamp.'</span>';
 			$selectors = preg_replace( "/\r|\n/", '', wp_kses_post( $selectors ) ); ?>
 
 			<script type="text/javascript">
@@ -203,6 +375,7 @@ if( !class_exists('Timify_Frontend') ):
 			$template='<div class="lm-rt-wrap">';
 			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
 			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
+			$wc_display_position = $this->get_data( 'wc_display_method', 'before_content' );
 
 			if ( ! is_singular() ) {
 				return $content;
@@ -233,10 +406,7 @@ if( !class_exists('Timify_Frontend') ):
 				$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
 
 				if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-					$template .='<span class="timify_lm_info" ' .$lm_style. '>
-					<span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> 
-					<span class="lm-date">'.$timestamp.'</span> 
-					</span>';
+					$template .='<span class="timify_lm_info" ' .$lm_style. '><span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="lm-date">'.$timestamp.'</span></span>';
 				}
 			}
 
@@ -251,13 +421,25 @@ if( !class_exists('Timify_Frontend') ):
 				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 				$rtdisable 		  = $this->get_meta( get_the_ID(), '_rt_disable' );
 				if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
-					$template .='<span class="timify_rt_info" '.$rt_style.'>
-					<span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> 
-					<span class="rt-time">' . esc_html( $this->reading_time ) . '</span> 
-					<span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span>
-					</span>';
+					$template .='<span class="timify_rt_info" '.$rt_style.'><span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="rt-time">' . esc_html( $this->reading_time ) . '</span> <span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span></span>';
 				}
 			}
+
+			if( $this->settings['wc_enable']==='on' && in_array( $wc_display_position, [ 'before_content' ]) ) {
+				$post_id          = get_the_ID();
+				$label            = $this->settings['wc_label'];
+				$postfix          = $this->settings['wc_postfix'];
+				$wc_alignment     = $this->settings['wc_alignment'];
+				$wc_style 		  = "style='display:block;text-align:$wc_alignment'";
+				$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
+				$words=$this->wc_calculation($content);
+
+				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
+					$template .='<span class="timify_wc_info" '.$wc_style.'><span class="wc-label wc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $words ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
+				}
+			}
+
+
 
 			$template.='</div>';
 
@@ -278,6 +460,8 @@ if( !class_exists('Timify_Frontend') ):
 		 * @since 1.0.0
 		 */
 		public function convert_date_time_ago( $original_time, $date_format ) {
+			global $post;
+			$this->date_format = $date_format;
 
 			$timelist_array = array(
 				'minutes' => 60,
@@ -286,8 +470,11 @@ if( !class_exists('Timify_Frontend') ):
 				'months' => YEAR_IN_SECONDS / 12,
 			);
 
-			global $post;
-			$this->date_format = $date_format;
+			$post_id = $post->ID;
+			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
+			if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
+				return $original_time;
+			}
 
 			if( !$this->is_can_convert_date() ){
 				return $original_time;
@@ -333,6 +520,16 @@ if( !class_exists('Timify_Frontend') ):
 			}
 			return $this->reading_time;
 
+		}
+
+		/**
+		 * post words count calculate 
+		 * @param $content
+		 * @return string words
+		 * @since  1.0.0
+		 */
+		public function wc_calculation($content){
+			return $this->words_count=str_word_count((strip_tags($content)));
 		}
 
 		/**
