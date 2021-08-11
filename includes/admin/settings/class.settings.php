@@ -37,7 +37,11 @@ if( !class_exists('Timify_Option') ):
 				),
 				array(
 					'id'    => 'timify_word_settings',
-					'title' => __( 'Post WordCount Section', 'timify' ),
+					'title' => __( 'Post WordCount Settings', 'timify' ),
+				),
+				array(
+					'id'    => 'timify_view_settings',
+					'title' => __( 'PostView Count Settings', 'timify' ),
 				)
 			);
 
@@ -284,7 +288,59 @@ if( !class_exists('Timify_Option') ):
 							'right'=>__('Right','timify')
 						), 
 					),
-				)
+				),
+
+				'timify_view_settings'=>array(
+					array(
+						'name'  => 'pvc_enable',
+						'label' => __( 'PostView Count Enable', 'timify' ),
+						'type'  => 'checkbox',
+						'default'=> 'on'
+					),
+					array(
+						'name'  => 'pvc_label',
+						'label' => __( 'PostView Count Label', 'timify' ),
+						'type'  => 'text',
+						'default'=>__('PostView Count:','timify')
+					),
+
+					array(
+						'name'  => 'pvc_postfix',
+						'label' => __( 'PostView Count Postfix', 'timify' ),
+						'type'  => 'text',
+						'default'=>__('Words','timify')
+					),
+
+					array(
+						'name'  => 'pvc_display_method',
+						'label' => __( 'PostView Count Display Method', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'before_content' => __( 'Before Content', 'timify' ),
+							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
+							'shortcode_content' => __( 'ShortCode', 'timify' ),
+						)
+					),
+
+					array(
+						'name'  => 'pvc_shortcode_content',
+						'label' => __( 'Copy PostView Count Shortcode Enter the Post Content', 'timify' ),
+						'type'  => 'html',
+						'desc'  => '[timify-post-words-count]'
+					),
+
+					array(
+						'name'  => 'pvc_alignment',
+						'label' => __( 'Words Count Before Content Alignment:', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'left' => __( 'Left', 'timify' ), 
+							'center'=>__('Center','timify'),
+							'right'=>__('Right','timify')
+						), 
+					),
+
+				),
 
 
 			);

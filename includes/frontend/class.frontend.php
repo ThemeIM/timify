@@ -437,7 +437,7 @@ if( !class_exists('Timify_Frontend') ):
 				$wc_alignment     = $this->settings['wc_alignment'];
 				$wc_style 		  = "style='display:block;text-align:$wc_alignment'";
 				$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
-				$words=$this->wc_calculation($content);
+				$words			  =	$this->wc_calculation($content);
 
 				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
 					$template .='<span class="timify_wc_info" '.$wc_style.'><span class="wc-label wc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $words ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
