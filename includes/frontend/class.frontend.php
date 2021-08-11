@@ -58,6 +58,7 @@ if( !class_exists('Timify_Frontend') ):
 				'wc_label'			=> 'Post Words:',
 				'wc_postfix'		=> 'Words',
 				'wc_alignment'		=> 'left',
+				'wc_display_method' => 'before_content'
 
 			);
 
@@ -65,6 +66,8 @@ if( !class_exists('Timify_Frontend') ):
 			$this->settings = get_option( 'timify_settings', $default_sets );
 			$this->settings = wp_parse_args( $this->settings, $default_sets);
 			$this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $default_sets);
+
+			//var_dump($this->settings);
 
 			// $list_filter_array = array();
 			// if ( isset($this->settings['active']['date']) ):
@@ -94,7 +97,6 @@ if( !class_exists('Timify_Frontend') ):
 
 			
             
-
             //diplay after date filter in post meta last modified date and reading time and view and word count
 			// $post_meta_date_filters =apply_filters( 'timify_post_meta_date_filters',array( 'the_date', 'get_the_date' ) );
 			// foreach($post_meta_date_filters as $post_meta_date_filter):
@@ -136,9 +138,10 @@ if( !class_exists('Timify_Frontend') ):
 
 		public function lm_rt_insert_after_date_in_post_mate($original_time){
 			global $post;
-			$reading_time = $last_modified_date = '';
+			$reading_time = $last_modified_date = $post_words_count = '';
 			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
 			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
+			$wc_display_position = $this->settings['wc_display_method'];
 
 			$post_id = $post->ID;
 			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
@@ -160,35 +163,37 @@ if( !class_exists('Timify_Frontend') ):
 			if (  empty( $lm_post_meta_selector ) ) {
 				return $original_time;
 			}
-
 			
 			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'inside_post_meta' ]) ) { 
-
 				$modified_timestamp = get_post_modified_time( 'U');
 				$time = current_time( 'U' );
 				$ago_label =  $this->settings['ago_label'];
 				$timestamp = human_time_diff( $modified_timestamp, $time ).' '.$ago_label;
 				//time filter hook
 				$last_modified_date = apply_filters( 'timify_post_formatted_date', $timestamp, get_the_ID() );
-                
 			}
-			
             
 			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'inside_post_meta' ]) ) { 
-
 				$post_id = $post->ID;
 				$this->rt_calculation( $post_id, $this->settings );
-
 				$postfix          = $this->settings['rt_postfix'];
 				$postfixs         = $this->settings['rt_postfixs'];
 				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 				$reading_time	  = $this->reading_time.' '.$cal_postfix;
+			}
 
-
+			if ( $this->settings['wc_enable']==='on' && in_array( $wc_display_position, [ 'inside_post_meta' ]) ) { 
+				$post_id          = $post->ID;
+				$content_post     = get_post($post_id);
+				$content 		  = $content_post->post_content;
+				$post_words_count = $this->wc_calculation($content);
+				$postfix          = $this->settings['wc_postfix'];
+				$post_words_count = $post_words_count.' '.$postfix;
 			}
 
 
-			return $original_time .' '.$last_modified_date.' '.$reading_time;
+
+			return $original_time .' '.$last_modified_date.' '.$reading_time.' '.$post_words_count;
 
 		}
 
@@ -375,7 +380,7 @@ if( !class_exists('Timify_Frontend') ):
 			$template='<div class="lm-rt-wrap">';
 			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
 			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
-			$wc_display_position = $this->get_data( 'wc_display_method', 'before_content' );
+			$wc_display_position = $this->settings['wc_display_method'];
 
 			if ( ! is_singular() ) {
 				return $content;
