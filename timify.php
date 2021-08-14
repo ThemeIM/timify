@@ -158,6 +158,7 @@ final class Timify {
 		//boot
 		//require_once( TIMIFY_PATH . '/vendor/autoload.php' );
 		require_once( TIMIFY_INCLUDES . '/script-functions.php' );
+		require_once( TIMIFY_INCLUDES . '/db.php' );
 		require_once( TIMIFY_INCLUDES . '/helpers/class.helper-functions.php' );
 
 		require_once( TIMIFY_INCLUDES . '/frontend/class.frontend.php' );
@@ -175,7 +176,7 @@ final class Timify {
 	 */
 
 	private function init_hooks() {
-		//register_activation_hook( __FILE__, array( $this, 'activate_plugin' ) );
+		register_activation_hook( __FILE__, array( $this, 'activate_plugin' ) );
 		add_action( 'admin_init', array( $this, 'check_environment' ) );
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ), - 1 );
 		add_action( 'init', array( $this, 'localization_setup' ) );
@@ -246,9 +247,9 @@ final class Timify {
 	 * @since 1.0.0
 	 */
 
-	// public function activate_plugin() {
-
-	// }
+	public function activate_plugin() {
+		timify_create_table();
+	}
 
 	/**
 	 * Deactivate plugin.

@@ -58,7 +58,12 @@ if( !class_exists('Timify_Frontend') ):
 				'wc_label'			=> 'Post Words:',
 				'wc_postfix'		=> 'Words',
 				'wc_alignment'		=> 'left',
-				'wc_display_method' => 'before_content'
+				'wc_display_method' => 'before_content',
+				'pvc_enable'		=> 'on',
+				'pvc_label'			=> 'Post Words:',
+				'pvc_postfix'		=> 'Words',
+				'pvc_alignment'		=> 'left',
+				'pvc_display_method' => 'before_content'
 
 			);
 
@@ -66,8 +71,7 @@ if( !class_exists('Timify_Frontend') ):
 			$this->settings = get_option( 'timify_settings', $default_sets );
 			$this->settings = wp_parse_args( $this->settings, $default_sets);
 			$this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $default_sets);
-
-			//var_dump($this->settings);
+			$this->settings = wp_parse_args( get_option( 'timify_view_settings', $default_sets ), $default_sets);
 
 			// $list_filter_array = array();
 			// if ( isset($this->settings['active']['date']) ):
@@ -93,6 +97,7 @@ if( !class_exists('Timify_Frontend') ):
 			//last modified and reading time insert post content
 			add_filter( 'the_content', array($this,'lm_rt_display_info'), apply_filters( 'timify_display_priority', 5 ) );
 			add_action( 'wp_footer', array($this,'lm_published_date_replace'), 99 );
+			add_action( 'wp_head', array($this,'pvc_insert_by_ip') );
 			//add_filter( 'wp_footer', array($this,'lm_rt_insert_in_post_mate'), 99 );
 
 			
@@ -106,8 +111,12 @@ if( !class_exists('Timify_Frontend') ):
 
 				
 		}
+		
+		public function pvc_insert_by_ip() {
 
-		public function render_loop_start(){
+		}
+
+		public function render_loop_start() {
 
 			$list_filter_array = array();
 			if ( isset($this->settings['active']['date']) ):
@@ -378,9 +387,10 @@ if( !class_exists('Timify_Frontend') ):
 		 */
 		public function lm_rt_display_info( $content ) {
 			$template='<div class="lm-rt-wrap">';
-			$lm_display_position = $this->get_data( 'lm_display_method', 'before_content' );
-			$rt_display_position = $this->get_data( 'rt_display_method', 'before_content' );
+			$lm_display_position = $this->settings['lm_display_method'];
+			$rt_display_position = $this->settings['rt_display_method'];
 			$wc_display_position = $this->settings['wc_display_method'];
+			$pvc_display_position = $this->settings['pvc_display_method'];
 
 			if ( ! is_singular() ) {
 				return $content;
@@ -442,6 +452,25 @@ if( !class_exists('Timify_Frontend') ):
 				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
 					$template .='<span class="timify_wc_info" '.$wc_style.'><span class="wc-label wc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $words ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
 				}
+			}
+
+			if( $this->settings['pvc_enable']==='on' && in_array( $pvc_display_position, [ 'before_content' ]) ) {
+				$post_id          = get_the_ID();
+				$label            = $this->settings['pvc_label'];
+				$postfix          = $this->settings['pvc_postfix'];
+				$pvc_alignment    = $this->settings['pvc_alignment'];
+				$pvc_style 		  = "style='display:block;text-align:$pvc_alignment'";
+				$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
+				if ( ! wp_is_post_revision( $post ) && ! is_preview() ) {
+					if ( is_single() ) {
+						timify_insert_ip();
+					}
+				}
+				$post_view_count  = '14';
+				if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
+					$template .='<span class="timify_pvc_info" '.$pvc_style.'><span class="pvc-label pvc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $post_view_count ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
+				}
+
 			}
 
 
