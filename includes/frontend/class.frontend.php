@@ -204,7 +204,7 @@ if( !class_exists('Timify_Frontend') ):
 				$post_id          = $post->ID;
 				$post_view_count  = timify_get_post_view_count();
 				$postfix          = $this->settings['pvc_postfix'];
-				$icon		  	 = '<span class="dashicons '.$this->settings['pvc_icon_class'].'"></span>';
+				$icon		  	 = !empty($this->settings['pvc_icon_class'])?'<span class="dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
 				$post_view_count = $icon. $post_view_count.' '.$postfix;
 			}
 
