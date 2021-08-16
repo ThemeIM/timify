@@ -324,6 +324,15 @@ if( !class_exists('Timify_Option') ):
 						), 
 					),
 
+					array(
+						'name'  => 'pvc_icon_class',
+						'label' => __( 'Icon Class', 'timify' ),
+						'type'  => 'text',
+						'default'=>__('dashicons-chart-bar','timify'),
+						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
+					),
+
+
 				),
 
 

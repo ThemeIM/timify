@@ -63,7 +63,9 @@ if( !class_exists('Timify_Frontend') ):
 				'pvc_label'			=> 'PostView Count:',
 				'pvc_postfix'		=> 'Views',
 				'pvc_alignment'		=> 'left',
-				'pvc_display_method' => 'before_content'
+				'pvc_display_method' => 'before_content',
+				'pvc_icon_class'	=> 'dashicons-chart-bar'
+
 
 			);
 
@@ -202,7 +204,8 @@ if( !class_exists('Timify_Frontend') ):
 				$post_id          = $post->ID;
 				$post_view_count  = timify_get_post_view_count();
 				$postfix          = $this->settings['pvc_postfix'];
-				$post_view_count = $post_view_count.' '.$postfix;
+				$icon		  	 = '<span class="dashicons '.$this->settings['pvc_icon_class'].'"></span>';
+				$post_view_count = $icon. $post_view_count.' '.$postfix;
 			}
 
 

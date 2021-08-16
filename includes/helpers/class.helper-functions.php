@@ -29,7 +29,8 @@ trait HelperFunctions{
 		],
 		'p'     => [
 			'class'=>[],
-			'id'=>[]
+			'id'=>[],
+			'a'=>[],
 		],
 		'label'  	=> [
 			'for'=>[],
@@ -56,9 +57,16 @@ trait HelperFunctions{
 			'id' => [],
 			'placeholder'=>[],
 		],
+		'a'=>[
+			'class'  => [],
+			'id' => [],
+			'href'=>[],
+			'target'=>[]
+		],
 		'fieldset'=>[],
 		'br'=>[],
 		'strong'=>[],
+		
 
 	];
 
