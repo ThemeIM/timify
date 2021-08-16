@@ -386,6 +386,7 @@ if( !class_exists('Timify_Frontend') ):
 		 * @return string $content  Filtered Content
 		 */
 		public function lm_rt_display_info( $content ) {
+			global $post;
 			$template='<div class="lm-rt-wrap">';
 			$lm_display_position = $this->settings['lm_display_method'];
 			$rt_display_position = $this->settings['rt_display_method'];
