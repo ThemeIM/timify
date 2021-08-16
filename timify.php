@@ -3,7 +3,7 @@
  * Plugin Name: Timify
  * Plugin URI:  https://www.themeim.com/
  * Description: Generate blogs following the latest trend with Timify. Apply post date, post time, and reading time on your blogs along with modifying them. And it is so easy to use
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      ThemeIM
  * Author URI:  https://themeim.com/
  * License:     GPLv2+ 
@@ -45,7 +45,7 @@ final class Timify {
 	 *
 	 * @var string
 	 */
-	protected $version = '1.0.0';
+	protected $version = '1.0.1';
 
     /**
      * Minimum PHP version required
@@ -262,6 +262,8 @@ final class Timify {
 			return;
 		}
 		delete_option( 'timify_settings' );
+		delete_option( 'timify_word_settings' );
+		delete_option( 'timify_view_settings' );
 	}
 
 	/**

@@ -66,10 +66,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
 
 			if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-				$template ='<span class="timify_lm_info" ' .$lm_style. '>
-				<span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> 
-				<span class="lm-date">'.$timestamp.'</span> 
-				</span>';
+				$template ='<span class="timify_lm_info" ' .$lm_style. '><span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="lm-date">'.$timestamp.'</span></span>';
 			}
 
 			return $template;
@@ -116,11 +113,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$cal_postfix = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 			$rtdisable = $this->get_meta( get_the_ID(), '_rt_disable' );
 			if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
-				$template ='<span class="timify_rt_info" '.$rt_style.'>
-				<span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> 
-				<span class="rt-time">' . esc_html( $this->reading_time ) . '</span> 
-				<span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span>
-				</span>';
+				$template ='<span class="timify_rt_info" '.$rt_style.'><span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="rt-time">' . esc_html( $this->reading_time ) . '</span><span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span></span>';
 			}
 
 			return $template;

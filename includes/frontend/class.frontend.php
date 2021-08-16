@@ -60,8 +60,8 @@ if( !class_exists('Timify_Frontend') ):
 				'wc_alignment'		=> 'left',
 				'wc_display_method' => 'before_content',
 				'pvc_enable'		=> 'on',
-				'pvc_label'			=> 'Post Words:',
-				'pvc_postfix'		=> 'Words',
+				'pvc_label'			=> 'PostView Count:',
+				'pvc_postfix'		=> 'Views',
 				'pvc_alignment'		=> 'left',
 				'pvc_display_method' => 'before_content'
 
@@ -70,8 +70,8 @@ if( !class_exists('Timify_Frontend') ):
 			$default_sets = apply_filters( 'timify_modify_default_sets', $default_sets );
 			$this->settings = get_option( 'timify_settings', $default_sets );
 			$this->settings = wp_parse_args( $this->settings, $default_sets);
-			// $this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $default_sets);
-			// $this->settings = wp_parse_args( get_option( 'timify_view_settings', $default_sets ), $default_sets);
+			$this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $this->settings);
+			$this->settings = wp_parse_args( get_option( 'timify_view_settings', $default_sets ), $this->settings);
 
 	
 			var_dump($this->settings);
@@ -170,15 +170,6 @@ if( !class_exists('Timify_Frontend') ):
 				return $original_time;
 			}
 
-			$rt_post_meta_selector = $this->get_data( 'rt_post_meta_selector' );
-			if (  empty( $rt_post_meta_selector ) ) {
-				return $original_time;
-			}
-
-			$lm_post_meta_selector = $this->get_data( 'lm_post_meta_selector' );
-			if (  empty( $lm_post_meta_selector ) ) {
-				return $original_time;
-			}
 			
 			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'inside_post_meta' ]) ) { 
 				$modified_timestamp = get_post_modified_time( 'U');

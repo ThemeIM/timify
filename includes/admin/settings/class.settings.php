@@ -131,14 +131,6 @@ if( !class_exists('Timify_Option') ):
 					),
 
 					array(
-						'name'  => 'lm_post_meta_selector',
-						'label' => __( 'CSS Selector of Last Update Date Inside Post Meta:', 'timify' ),
-						'type'  => 'text',
-						'desc'=> __('This field for last update date inside post meta . If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
-						'default'=>'.post-meta-wrapper .post-meta .post-date'
-					),
-
-					array(
 						'name'  => 'lm_post_date_selector',
 						'label' => __( 'Enter CSS Selector of Post Date:', 'timify' ),
 						'type'  => 'text',
@@ -208,14 +200,6 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Copy Reading Time Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
 						'desc'  => '[timify-post-reading-time]'
-					),
-
-					array(
-						'name'  => 'rt_post_meta_selector',
-						'label' => __( 'CSS Selector of Reading Time Inside Post Meta:', 'timify' ),
-						'type'  => 'text',
-						'desc'=> __('This field for reading time inside post meta . If you are using any caching plugin, please clear/remove your cache after any changes made to this field.','timify'),
-						'default'=>'.post-meta-wrapper .post-meta'
 					),
 
 					array(
@@ -308,7 +292,7 @@ if( !class_exists('Timify_Option') ):
 						'name'  => 'pvc_postfix',
 						'label' => __( 'PostView Count Postfix', 'timify' ),
 						'type'  => 'text',
-						'default'=>__('Words','timify')
+						'default'=>__('Views','timify')
 					),
 
 					array(
