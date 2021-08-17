@@ -33,15 +33,19 @@ if( !class_exists('Timify_Option') ):
 			$sections = array(
 				array(
 					'id'     => 'timify_settings',
-					'title'  => __( 'Timify Settings', 'timify' ),
+					'title'  => __( 'General Settings', 'timify' ),
+				),
+				array(
+					'id'    => 'timify_reading_settings',
+					'title' => __( 'Reading Time', 'timify' ),
 				),
 				array(
 					'id'    => 'timify_word_settings',
-					'title' => __( 'Post WordCount Settings', 'timify' ),
+					'title' => __( 'Word', 'timify' ),
 				),
 				array(
 					'id'    => 'timify_view_settings',
-					'title' => __( 'PostView Count Settings', 'timify' ),
+					'title' => __( 'View', 'timify' ),
 				)
 			);
 
@@ -148,7 +152,16 @@ if( !class_exists('Timify_Option') ):
 							'right'=>__('Right','timify')
 						), 
 					),
+					array(
+						'name'  => 'lm_rt_post_types',
+						'label' => __( 'Apply Post Type', 'timify' ),
+						'type'  => 'postTypes',
+						'default'=> array('post')
+					),
 
+				),
+
+				'timify_reading_settings'=>array(
 					array(
 						'name'  => 'rt_enable',
 						'label' => __( 'Reading Time Enable', 'timify' ),
@@ -214,12 +227,12 @@ if( !class_exists('Timify_Option') ):
 					),
 
 					array(
-						'name'  => 'lm_rt_post_types',
-						'label' => __( 'Apply Post Type', 'timify' ),
-						'type'  => 'postTypes',
-						'default'=> array('post')
+						'name'  => 'rt_icon_class',
+						'label' => __( 'Icon Class', 'timify' ),
+						'type'  => 'text',
+						'default'=> 'dashicons-clock',
+						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
 					),
-
 				),
 
 				'timify_word_settings'=>array(
@@ -271,6 +284,13 @@ if( !class_exists('Timify_Option') ):
 							'center'=>__('Center','timify'),
 							'right'=>__('Right','timify')
 						), 
+					),
+					array(
+						'name'  => 'wc_icon_class',
+						'label' => __( 'Icon Class', 'timify' ),
+						'type'  => 'text',
+						'default'=>'dashicons-editor-table',
+						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
 					),
 				),
 
@@ -328,7 +348,7 @@ if( !class_exists('Timify_Option') ):
 						'name'  => 'pvc_icon_class',
 						'label' => __( 'Icon Class', 'timify' ),
 						'type'  => 'text',
-						'default'=>__('dashicons-chart-bar','timify'),
+						'default'=>'dashicons-visibility',
 						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
 					),
 

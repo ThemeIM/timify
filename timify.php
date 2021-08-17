@@ -262,6 +262,7 @@ final class Timify {
 			return;
 		}
 		delete_option( 'timify_settings' );
+		delete_option( 'timify_reading_settings' );
 		delete_option( 'timify_word_settings' );
 		delete_option( 'timify_view_settings' );
 	}
