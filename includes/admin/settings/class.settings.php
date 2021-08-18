@@ -158,6 +158,13 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'postTypes',
 						'default'=> array('post')
 					),
+					array(
+						'name'  => 'lm_icon_class',
+						'label' => __( 'Icon Class', 'timify' ),
+						'type'  => 'text',
+						'default'=> 'dashicons-calendar-alt',
+						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
+					),
 
 				),
 

@@ -46,6 +46,7 @@ if( !class_exists('Timify_Frontend') ):
 				'lm_display_method' => 'before_content',
 				'lm_alignment'		=> 'left',
 				'lm_post_date_selector'=>'.posted-on .entry-date',
+				'lm_icon_class'		=> 'dashicons-calendar-alt',
 				'rt_enable'			=> 'on',
 				'rt_label'			=> 'Reading Time:',
 				'rt_postfix'		=> 'Minutes',
@@ -101,6 +102,8 @@ if( !class_exists('Timify_Frontend') ):
 			// 	add_filter( $filter, array( &$this, 'convert_date_time_ago' ), 10, 2 );
 			// endforeach;
 
+			add_action( 'wp_enqueue_scripts', array(&$this,'render_frontend_styles') );
+
             add_action('loop_start', array($this,'render_loop_start'), 50);
 
 			//last modified and reading time insert post content
@@ -110,13 +113,46 @@ if( !class_exists('Timify_Frontend') ):
 
             
             //diplay after date filter in post meta last modified date and reading time and view and word count
-			// $post_meta_date_filters =apply_filters( 'timify_post_meta_date_filters',array( 'the_date', 'get_the_date' ) );
+			// $post_meta_date_filters = apply_filters( 'timify_post_meta_date_filters',array( 'the_date','get_the_date',) );
+			// //$post_meta_date_filters = apply_filters( 'timify_post_meta_date_filters',array( 'the_title') );
 			// foreach($post_meta_date_filters as $post_meta_date_filter):
 			// 	add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
 			// endforeach;
+
+			//add_filter( 'the_title', array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
 			
 				
 		}
+
+		public function render_frontend_styles() {
+			wp_enqueue_style('timify-style',TIMIFY_ASSETS_URL.'/css/timify-frontend.css');
+			$css = array();
+			$css[] = '.timify-meta-wrap { 
+				
+			}';
+			$css[] = '.timify-container {
+				background:#ddd;
+				color: #000;
+				font-size: 15px;
+				margin-top: 1px;
+				margin-right: 1px;
+				margin-bottom: 1px;
+				margin-left: 1px;
+				padding-top: 0.5em;
+				padding-right: 0.7em;
+				padding-bottom: 0.5em;
+				padding-left: 0.7em;
+				display: inline-block;
+			}';
+			wp_add_inline_style( 'timify-style', preg_replace( '/\n|\t/i', '', implode( '', $css ) ));
+		}
+
+		// public function timify_frontend_css( $css=array() ){
+		// 	$css[] = '.timify-meta-wrap { 
+		// 		background-color: #ddd; 
+		// 	}';
+		// 	return preg_replace( '/\n|\t/i', '', implode( '', $css ) );
+		// }
 		
 		public function pvc_insert_by_ip() {
 			global $post;
@@ -149,10 +185,13 @@ if( !class_exists('Timify_Frontend') ):
 			endforeach;
 
 
-			$post_meta_date_filters = apply_filters( 'timify_post_meta_date_filters',array( 'the_date', 'get_the_date' ) );
-			foreach($post_meta_date_filters as $post_meta_date_filter):
-				add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
-			endforeach;
+			// $post_meta_date_filters = apply_filters( 'timify_post_meta_date_filters',array( 'the_date','get_the_date',) );
+			// //$post_meta_date_filters = apply_filters( 'timify_post_meta_date_filters',array( 'the_title') );
+			// foreach($post_meta_date_filters as $post_meta_date_filter):
+			// 	add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
+			// endforeach;
+
+			add_filter( 'the_title', array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
 			
 		}
 
@@ -181,8 +220,9 @@ if( !class_exists('Timify_Frontend') ):
 				$time = current_time( 'U' );
 				$ago_label = $this->settings['ago_label'];
 				$lm_label  = !empty($this->settings['lm_label'])?'<span class="label">'.$this->settings['lm_label'].'</span>':'';
-				$timestamp = '<span class="time">'.human_time_diff( $modified_timestamp, $time ).' '.$ago_label.'</span>';
-				$template_last_modified = '<span class="timify-meta-last-modified-wrap">( '.$lm_label .$timestamp.' )</span>';
+				$icon	   = !empty($this->settings['lm_icon_class'])?'<span class="icon dashicons '.$this->settings['lm_icon_class'].'"></span>':'';
+				$timestamp = '<span class="time">&nbsp;'.human_time_diff( $modified_timestamp, $time ).' '.$ago_label.'</span>';
+				$template_last_modified = '<span class="timify-meta-last-modified-wrap">'.$lm_label.'&nbsp;'.$icon .$timestamp.'</span>';
 			}
             
 			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'inside_post_meta' ]) ) { 
@@ -204,7 +244,7 @@ if( !class_exists('Timify_Frontend') ):
 				$post_words_count = '<span class="words">&nbsp;'.$this->wc_calculation($content).'</span>';
 				$postfix          = !empty($this->settings['wc_postfix'])?'<span class="postfix">'.$this->settings['wc_postfix'].'</span>':'';
 				$icon		  	  = !empty($this->settings['wc_icon_class'])?'<span class="icon dashicons '.$this->settings['wc_icon_class'].'"></span>':'';
-				$template_word = '<span class="timify-meta-word-wrap">'. $icon . $post_words_count.' '.$postfix.'</span>';
+				$template_word    = '<span class="timify-meta-word-wrap">'. $icon . $post_words_count.' '.$postfix.'</span>';
 			}
 
 			if ( $this->settings['pvc_enable']==='on' && in_array( $pvc_display_position, [ 'inside_post_meta' ]) ) { 
@@ -215,10 +255,19 @@ if( !class_exists('Timify_Frontend') ):
 				$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
 			}
 
-			// $html='<span style="color:red">Golam Robbani</span>';
-			// return $html;
+			if ( in_the_loop() && is_singular()) {
+				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			}elseif(in_the_loop() && is_home()){
+				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			}elseif(in_the_loop() && is_archive()){
+				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			}else{
+				return $original_time;
+			}
 
-			return $original_time .' '.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view;
+
+			//return $original_time .' '.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view;
+
 
 		}
 
