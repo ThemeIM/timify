@@ -337,7 +337,7 @@ if( !class_exists('Timify_Option') ):
 						'name'  => 'pvc_shortcode_content',
 						'label' => __( 'Copy PostView Count Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
-						'desc'  => '[timify-post-words-count]'
+						'desc'  => '[timify-post-view-count]'
 					),
 
 					array(
