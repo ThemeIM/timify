@@ -41,10 +41,17 @@ if( !class_exists('Timify_Frontend') ):
 				'active'   			=> array( 'date' => 'date', 'time' => 'time', 'modified_date' => '', 'modified_time' => '' ),
 				'time'    			=> array( 'number' => '12', 'type'  => 'months' ),
 				'ago_label' 		=> 'ago',
+				'font_size'		    => '15',
+				'line_height'		=> '22',
+				'margin'			=> array('left' => '1', 'top'  => '1','right'=>'1','bottom'  => '1','type'=>'px'),
+				'padding'			=> array('left' => '0.5', 'top'  => '0.7','right'=>'0.5','bottom'  => '0.7','type'=>'em'),
+				'bg_color'		    => '#dddddd',
+				'display_bg'        => 'block',
+				'text_color'		=> '#000000',
+				'alignment'		    => 'center',
 				'lm_enable'         => 'on',
 				'lm_label'          => 'Last Update On:',
 				'lm_display_method' => 'before_content',
-				'lm_alignment'		=> 'left',
 				'lm_post_date_selector'=>'.posted-on .entry-date',
 				'lm_icon_class'		=> 'dashicons-calendar-alt',
 				'rt_enable'			=> 'on',
@@ -127,32 +134,28 @@ if( !class_exists('Timify_Frontend') ):
 		public function render_frontend_styles() {
 			wp_enqueue_style('timify-style',TIMIFY_ASSETS_URL.'/css/timify-frontend.css');
 			$css = array();
-			$css[] = '.timify-meta-wrap { 
-				
-			}';
-			$css[] = '.timify-container {
-				background:#ddd;
-				color: #000;
-				font-size: 15px;
-				margin-top: 1px;
-				margin-right: 1px;
-				margin-bottom: 1px;
-				margin-left: 1px;
-				padding-top: 0.5em;
-				padding-right: 0.7em;
-				padding-bottom: 0.5em;
-				padding-left: 0.7em;
-				display: inline-block;
-			}';
+
+			$css[] = ".timify-meta-wrap { 
+				font-size: {$this->settings['font_size']}px;
+				line-height: {$this->settings['line_height']}px;
+				text-align: {$this->settings['alignment']};
+				margin-top: {$this->settings['margin']['top']}{$this->settings['margin']['type']};
+				margin-right: {$this->settings['margin']['right']}{$this->settings['margin']['type']};
+				margin-bottom: {$this->settings['margin']['bottom']}{$this->settings['margin']['type']};
+				margin-left: {$this->settings['margin']['left']}{$this->settings['margin']['type']};
+			}";
+			$css[] = ".timify-container {
+				background:{$this->settings['bg_color']};
+				color: {$this->settings['text_color']};
+				padding-top: {$this->settings['padding']['top']}{$this->settings['padding']['type']};
+				padding-right: {$this->settings['padding']['right']}{$this->settings['padding']['type']};
+				padding-bottom: {$this->settings['padding']['bottom']}{$this->settings['padding']['type']};
+				padding-left: {$this->settings['padding']['left']}{$this->settings['padding']['type']};
+				display: {$this->settings['display_bg']};
+			}";
 			wp_add_inline_style( 'timify-style', preg_replace( '/\n|\t/i', '', implode( '', $css ) ));
 		}
 
-		// public function timify_frontend_css( $css=array() ){
-		// 	$css[] = '.timify-meta-wrap { 
-		// 		background-color: #ddd; 
-		// 	}';
-		// 	return preg_replace( '/\n|\t/i', '', implode( '', $css ) );
-		// }
 		
 		public function pvc_insert_by_ip() {
 			global $post;
@@ -190,8 +193,9 @@ if( !class_exists('Timify_Frontend') ):
 			// foreach($post_meta_date_filters as $post_meta_date_filter):
 			// 	add_filter( $post_meta_date_filter, array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
 			// endforeach;
-
-			add_filter( 'the_title', array($this,'lm_rt_insert_after_date_in_post_mate'),10, 1);
+            
+			//add_filter( 'get_the_excerpt', array($this,'lm_rt_insert_after_date_in_post_mate'), 100, 1);
+			add_filter( 'the_title', array($this,'lm_rt_insert_after_date_in_post_mate'), 90, 2);
 			
 		}
 
@@ -208,12 +212,6 @@ if( !class_exists('Timify_Frontend') ):
 			if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
 				return $original_title;
 			}
-
-			$disable = $this->get_meta( $post_id, '_lm_disable' );
-			if ( ! empty( $disable ) && $disable == 'yes' ) {
-				return $original_title;
-			}
-
 			
 			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'inside_post_meta' ]) ) { 
 				$modified_timestamp = get_post_modified_time( 'U');
@@ -222,7 +220,10 @@ if( !class_exists('Timify_Frontend') ):
 				$lm_label  = !empty($this->settings['lm_label'])?'<span class="label">'.$this->settings['lm_label'].'</span>':'';
 				$icon	   = !empty($this->settings['lm_icon_class'])?'<span class="icon dashicons '.$this->settings['lm_icon_class'].'"></span>':'';
 				$timestamp = '<span class="time">&nbsp;'.human_time_diff( $modified_timestamp, $time ).' '.$ago_label.'</span>';
-				$template_last_modified = '<span class="timify-meta-last-modified-wrap">'.$lm_label.'&nbsp;'.$icon .$timestamp.'</span>';
+				$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
+				if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
+					$template_last_modified = '<span class="timify-meta-last-modified-wrap">'.$lm_label.'&nbsp;'.$icon .$timestamp.'</span>';
+				}
 			}
             
 			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'inside_post_meta' ]) ) { 
@@ -234,7 +235,10 @@ if( !class_exists('Timify_Frontend') ):
 				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 				$cal_postfix	  = !empty($cal_postfix)?'<span class="postfix">'.$cal_postfix.'</span>':'';
 				$icon		  	  = !empty($this->settings['rt_icon_class'])?'<span class="icon dashicons '.$this->settings['rt_icon_class'].'"></span>':'';
-				$template_reading = '<span class="timify-meta-reading-wrap">'.$icon . $reading_time.' '.$cal_postfix.'</span>';
+				$rtdisable 		  = $this->get_meta( get_the_ID(), '_rt_disable' );
+				if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
+					$template_reading = '<span class="timify-meta-reading-wrap">'.$icon . $reading_time.' '.$cal_postfix.'</span>';
+				}
 			}
 
 			if ( $this->settings['wc_enable']==='on' && in_array( $wc_display_position, [ 'inside_post_meta' ]) ) { 
@@ -244,7 +248,10 @@ if( !class_exists('Timify_Frontend') ):
 				$post_words_count = '<span class="words">&nbsp;'.$this->wc_calculation($content).'</span>';
 				$postfix          = !empty($this->settings['wc_postfix'])?'<span class="postfix">'.$this->settings['wc_postfix'].'</span>':'';
 				$icon		  	  = !empty($this->settings['wc_icon_class'])?'<span class="icon dashicons '.$this->settings['wc_icon_class'].'"></span>':'';
-				$template_word    = '<span class="timify-meta-word-wrap">'. $icon . $post_words_count.' '.$postfix.'</span>';
+				$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
+				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
+					$template_word    = '<span class="timify-meta-word-wrap">'. $icon . $post_words_count.' '.$postfix.'</span>';
+				}
 			}
 
 			if ( $this->settings['pvc_enable']==='on' && in_array( $pvc_display_position, [ 'inside_post_meta' ]) ) { 
@@ -252,8 +259,19 @@ if( !class_exists('Timify_Frontend') ):
 				$post_view_count  = '<span class="views">&nbsp;'.timify_get_post_view_count().'</span>';
 				$postfix          = !empty($this->settings['pvc_postfix'])?'<span class="postfix">'.$this->settings['pvc_postfix'].'</span>':'';
 				$icon		  	  = !empty($this->settings['pvc_icon_class'])?'<span class="icon dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
-				$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
+				$pvcdisable 		  = $this->get_meta( get_the_ID(), '_pvc_disable' );
+				if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
+					$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
+				}
 			}
+
+			// if ( in_the_loop() && is_singular()) {
+			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			// }elseif(in_the_loop() && is_home()){
+			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			// }elseif(in_the_loop() && is_archive()){
+			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+			// }
             
 			if( !empty($template_last_modified) || !empty($template_reading) || !empty($template_word) || !empty($template_view) ):
 				if ( in_the_loop() && is_singular()) {
@@ -353,7 +371,7 @@ if( !class_exists('Timify_Frontend') ):
 		 */
 		public function lm_rt_display_info( $content ) {
 			global $post;
-			$template='<div class="lm-rt-wrap">';
+			$template_reading = $template_last_modified = $template_word = $template_view = '';
 			$lm_display_position  = $this->settings['lm_display_method'];
 			$rt_display_position  = $this->settings['rt_display_method'];
 			$wc_display_position  = $this->settings['wc_display_method'];
@@ -374,74 +392,67 @@ if( !class_exists('Timify_Frontend') ):
 
 		
 			if ( $this->settings['lm_enable']==='on' && in_array( $lm_display_position, [ 'before_content' ]) ) {
-				$label            = $this->settings['lm_label'];
-				$lm_alignment     = $this->settings['lm_alignment'];
-				$lm_style 		  = "style='display:block;text-align:$lm_alignment'";
-		
-				$modified_timestamp = get_post_modified_time( 'U' );
-				$time 				= current_time( 'U' );
-				$ago_label 			= $this->settings['ago_label'];
-				$timestamp			= human_time_diff( $modified_timestamp, $time ).' '.$ago_label;
-
-				//time filter hook
-				$timestamp = apply_filters( 'timify_post_formatted_date', $timestamp, get_the_ID() );
+				$modified_timestamp = get_post_modified_time( 'U');
+				$time = current_time( 'U' );
+				$ago_label = $this->settings['ago_label'];
+				$lm_label  = !empty($this->settings['lm_label'])?'<span class="label">'.$this->settings['lm_label'].'</span>':'';
+				$icon	   = !empty($this->settings['lm_icon_class'])?'<span class="icon dashicons '.$this->settings['lm_icon_class'].'"></span>':'';
+				$timestamp = '<span class="time">&nbsp;'.human_time_diff( $modified_timestamp, $time ).' '.$ago_label.'</span>';
 				$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
-
 				if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-					$template .='<span class="timify_lm_info" ' .$lm_style. '><span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="lm-date">'.$timestamp.'</span></span>';
+					$template_last_modified = '<span class="timify-meta-last-modified-wrap">'.$lm_label.'&nbsp;'.$icon .$timestamp.'</span>';
 				}
 			}
 
-			if( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'before_content' ]) ) {
-				$post_id          = get_the_ID();
+			if ( $this->settings['rt_enable']==='on' && in_array( $rt_display_position, [ 'before_content' ]) ) { 
+				$post_id = $post->ID;
 				$this->rt_calculation( $post_id, $this->settings );
-				$label            = $this->settings['rt_label'];
 				$postfix          = $this->settings['rt_postfix'];
 				$postfixs         = $this->settings['rt_postfixs'];
-				$rt_alignment     = $this->settings['rt_alignment'];
-				$rt_style 		  = "style='display:block;text-align:$rt_alignment'";
+				$reading_time     = '<span class="reading">&nbsp;'.$this->reading_time.'</span>';
 				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
+				$cal_postfix	  = !empty($cal_postfix)?'<span class="postfix">'.$cal_postfix.'</span>':'';
+				$icon		  	  = !empty($this->settings['rt_icon_class'])?'<span class="icon dashicons '.$this->settings['rt_icon_class'].'"></span>':'';
 				$rtdisable 		  = $this->get_meta( get_the_ID(), '_rt_disable' );
 				if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
-					$template .='<span class="timify_rt_info" '.$rt_style.'><span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="rt-time">' . esc_html( $this->reading_time ) . '</span> <span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span></span>';
+					$template_reading = '<span class="timify-meta-reading-wrap">'.$icon . $reading_time.' '.$cal_postfix.'</span>';
 				}
 			}
 
-			if( $this->settings['wc_enable']==='on' && in_array( $wc_display_position, [ 'before_content' ]) ) {
-				$post_id          = get_the_ID();
-				$label            = $this->settings['wc_label'];
-				$postfix          = $this->settings['wc_postfix'];
-				$wc_alignment     = $this->settings['wc_alignment'];
-				$wc_style 		  = "style='display:block;text-align:$wc_alignment'";
+			if ( $this->settings['wc_enable']==='on' && in_array( $wc_display_position, [ 'before_content' ]) ) { 
+				$post_id          = $post->ID;
+				$content_post     = get_post($post_id);
+				$content 		  = $content_post->post_content;
+				$post_words_count = '<span class="words">&nbsp;'.$this->wc_calculation($content).'</span>';
+				$postfix          = !empty($this->settings['wc_postfix'])?'<span class="postfix">'.$this->settings['wc_postfix'].'</span>':'';
+				$icon		  	  = !empty($this->settings['wc_icon_class'])?'<span class="icon dashicons '.$this->settings['wc_icon_class'].'"></span>':'';
 				$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
-				$words			  =	$this->wc_calculation($content);
-
 				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
-					$template .='<span class="timify_wc_info" '.$wc_style.'><span class="wc-label wc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $words ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
+					$template_word    = '<span class="timify-meta-word-wrap">'. $icon . $post_words_count.' '.$postfix.'</span>';
 				}
 			}
 
-			if( $this->settings['pvc_enable']==='on' && in_array( $pvc_display_position, [ 'before_content' ]) ) {
-				$post_id          = get_the_ID();
-				$label            = $this->settings['pvc_label'];
-				$postfix          = $this->settings['pvc_postfix'];
-				$pvc_alignment    = $this->settings['pvc_alignment'];
-				$pvc_style 		  = "style='display:block;text-align:$pvc_alignment'";
-				$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
-				$post_view_count  = timify_get_post_view_count();
+			if ( $this->settings['pvc_enable']==='on' && in_array( $pvc_display_position, [ 'before_content' ]) ) { 
+				$post_id          = $post->ID;
+				$post_view_count  = '<span class="views">&nbsp;'.timify_get_post_view_count().'</span>';
+				$postfix          = !empty($this->settings['pvc_postfix'])?'<span class="postfix">'.$this->settings['pvc_postfix'].'</span>':'';
+				$icon		  	  = !empty($this->settings['pvc_icon_class'])?'<span class="icon dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
+				$pvcdisable 		  = $this->get_meta( get_the_ID(), '_pvc_disable' );
 				if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
-					$template .='<span class="timify_pvc_info" '.$pvc_style.'><span class="pvc-label pvc-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="wc-time">' . esc_html( $post_view_count ) . '</span> <span class="wc-label wc-postfix">' . wp_kses( $postfix, $this->allwoed_html_kses ) . '</span></span>';
+					$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
 				}
-
 			}
+            
+			if( !empty($template_last_modified) || !empty($template_reading) || !empty($template_word) || !empty($template_view) && in_the_loop() ):
+				$html = '<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+				return $html . $content;
+			else:
+				return $content;
+			endif;
 
-
-
-			$template.='</div>';
-
-			$content = $template . $content;
+			//return $content;
 		
-			return apply_filters( 'timify_post_content_output', $content, $template, get_the_ID() );
+			//return apply_filters( 'timify_post_content_output', $content, $template, get_the_ID() );
 		}
 
 

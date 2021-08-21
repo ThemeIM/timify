@@ -41,10 +41,10 @@ if( !class_exists('Timify_MetaBox') ):
 				return;
 			}
 
-			$position = $this->get_data( 'lm_display_method', 'before_content' );
-			if ( ! in_array( $position, [ 'before_content', 'replace_original' ] ) ) {
-				return;
-			}
+			// $position = $this->get_data( 'lm_display_method', 'before_content' );
+			// if ( ! in_array( $position, [ 'before_content', 'replace_original' ] ) ) {
+			// 	return;
+			// }
 			
 			$post_types = $this->get_data( 'lm_rt_post_types' );
 
@@ -65,6 +65,8 @@ if( !class_exists('Timify_MetaBox') ):
 			// retrieve post meta
 			$disabled = $this->get_meta( $post->ID, '_lm_disable' );
 			$rtdisabled = $this->get_meta( $post->ID, '_rt_disable' );
+			$wcdisabled = $this->get_meta( $post->ID, '_wc_disable' );
+			$pvcdisabled = $this->get_meta( $post->ID, '_pvc_disable' );
 
 			// buid nonce
 			$this->nonce( 'disabled' ); ?>
@@ -78,6 +80,16 @@ if( !class_exists('Timify_MetaBox') ):
 				<p>
 					<label for="rt-disable" class="selectit" title="<?php _e( 'You can disable auto insertation of reading time on this', 'timify' ); ?>">
 						<input id="rt-disable" type="checkbox" name="rt_disable_insert" <?php if ( $rtdisabled == 'yes' ) { echo esc_attr('checked'); } ?> /> <?php _e( 'Disable reading time on this post', 'timify' ); ?>
+					</label>
+				</p>
+				<p>
+					<label for="wc-disable" class="selectit" title="<?php _e( 'You can disable auto insertation of word count on this', 'timify' ); ?>">
+						<input id="wc-disable" type="checkbox" name="wc_disable_insert" <?php if ( $wcdisabled == 'yes' ) { echo esc_attr('checked'); } ?> /> <?php _e( 'Disable Word count on this post', 'timify' ); ?>
+					</label>
+				</p>
+				<p>
+					<label for="pvc-disable" class="selectit" title="<?php _e( 'You can disable auto insertation of Post View on this', 'timify' ); ?>">
+						<input id="pvc-disable" type="checkbox" name="pvc_disable_insert" <?php if ( $pvcdisabled == 'yes' ) { echo esc_attr('checked'); } ?> /> <?php _e( 'Disable View Count on this post', 'timify' ); ?>
 					</label>
 				</p>
 			</div>
@@ -114,6 +126,16 @@ if( !class_exists('Timify_MetaBox') ):
 				$this->update_meta( $post_id, '_rt_disable', 'yes' );
 			} else {
 				$this->update_meta( $post_id, '_rt_disable', 'no' );
+			}
+			if ( isset( $_POST[ 'wc_disable_insert' ] ) ) {
+				$this->update_meta( $post_id, '_wc_disable', 'yes' );
+			} else {
+				$this->update_meta( $post_id, '_wc_disable', 'no' );
+			}
+			if ( isset( $_POST[ 'pvc_disable_insert' ] ) ) {
+				$this->update_meta( $post_id, '_pvc_disable', 'yes' );
+			} else {
+				$this->update_meta( $post_id, '_pvc_disable', 'no' );
 			}
 		}
 

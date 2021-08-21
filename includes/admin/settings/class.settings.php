@@ -79,6 +79,7 @@ if( !class_exists('Timify_Option') ):
 					array(
 						'name'      => 'time',
 						'label'     => __( 'Apply to Posts Time Ago Show Not Older Than', 'timify' ),
+						'size'      => 100,
 						'type'      => 'groupTextSelect',
 						'group_fields'=>array('number','type'),
 						'options'   =>array( 
@@ -143,28 +144,114 @@ if( !class_exists('Timify_Option') ):
 					),
 
 					array(
-						'name'  => 'lm_alignment',
-						'label' => __( 'Last Modified Before Content Alignment:', 'timify' ),
-						'type'  => 'select',
-						'options'=> array( 
-							'left' => __( 'Left', 'timify' ), 
-							'center'=>__('Center','timify'),
-							'right'=>__('Right','timify')
-						), 
-					),
-					array(
-						'name'  => 'lm_rt_post_types',
-						'label' => __( 'Apply Post Type', 'timify' ),
-						'type'  => 'postTypes',
-						'default'=> array('post')
-					),
-					array(
 						'name'  => 'lm_icon_class',
 						'label' => __( 'Icon Class', 'timify' ),
 						'type'  => 'text',
 						'default'=> 'dashicons-calendar-alt',
 						'desc'=>'Enter the post views icon class. Any of the <a href="https://developer.wordpress.org/resource/dashicons/" target="_blank">Dashicons</a> classes are available.'
 					),
+
+					array(
+						'name'  => 'lm_rt_post_types',
+						'label' => __( 'Apply Post Type', 'timify' ),
+						'type'  => 'postTypes',
+						'default'=> array('post')
+					),
+
+					array(
+						'name'  => 'font_size',
+						'label' => __( 'Font Size', 'timify' ),
+						'size'  => 100,
+						'type'  => 'number',
+						'default'=> 15,
+						'desc' => 'px'
+					),
+
+					array(
+						'name'  => 'line_height',
+						'label' => __( 'Line Height', 'timify' ),
+						'size'  => 100,
+						'type'  => 'number',
+						'step'  => 'any',
+						'default'=> 22,
+						'desc' => 'px'
+					),
+
+					array(
+						'name'      => 'margin',
+						'label'     => __( 'Marging', 'timify' ),
+						'size'      => 100,
+						'step'      => 'any',
+						'type'      => 'groupNumberSelect',
+						'group_fields'=>array('left','top','right','bottom','type'),
+						'options'   =>array( 
+							'px' => __( 'px', 'timify' ), 
+							'em' => __( 'em', 'timify' ),
+						),
+						'default'=>array(
+							'left'=>1,
+							'top'=>1,
+							'right'=>1,
+							'bottom'=>1,
+							'type' => 'px'
+						)
+						
+					),
+
+					array(
+						'name'      => 'padding',
+						'label'     => __( 'Padding', 'timify' ),
+						'size'      => 100,
+						'step'      => 'any',
+						'type'      => 'groupNumberSelect',
+						'group_fields'=>array('left','top','right','bottom','type'),
+						'options'   =>array( 
+							'px' => __( 'px', 'timify' ), 
+							'em' => __( 'em', 'timify' ),
+						),
+						'default'=>array(
+							'left'=>0.5,
+							'top'=>0.7,
+							'right'=>0.5,
+							'bottom'=>0.7,
+							'type' => 'em'
+						)
+						
+					),
+					array(
+						'name'  => 'bg_color',
+						'label' => __( 'Background Color', 'timify' ),
+						'type'  => 'color',
+						'default'=> '#dddddd',
+					),
+					array(
+						'name'  => 'display_bg',
+						'label' => __( 'Display Background', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'block' => __( 'Full Wrap', 'timify' ), 
+							'inline-block' => __( 'Inline Wrap', 'timify' ),  
+						), 
+					),
+					array(
+						'name'  => 'text_color',
+						'label' => __( 'Text Color', 'timify' ),
+						'type'  => 'color',
+						'default'=> '#000000',
+					),
+
+					array(
+						'name'  => 'alignment',
+						'label' => __( 'Before Content Alignment:', 'timify' ),
+						'type'  => 'select',
+						'options'=> array( 
+							'left' => __( 'Left', 'timify' ), 
+							'center'=>__('Center','timify'),
+							'right'=>__('Right','timify')
+						), 
+						'default'=> 'center'
+					),
+					
 
 				),
 

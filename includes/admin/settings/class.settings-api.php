@@ -222,7 +222,7 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 			$min         = ( $args['min'] == '' ) ? '' : ' min="' . $args['min'] . '"';
 			$max         = ( $args['max'] == '' ) ? '' : ' max="' . $args['max'] . '"';
 			$step        = ( $args['step'] == '' ) ? '' : ' step="' . $args['step'] . '"';
-			$html        = sprintf( '<input type="%1$s" class="%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder, $min, $max, $step );
+			$html        = sprintf( '<input type="%1$s" class="timify-%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>', $type, $size, $args['section'], $args['id'], $value, $placeholder, $min, $max, $step );
 			$html        .= $this->get_field_description( $args );
 			echo wp_kses( $html, $this->allowed_html_field );
 		}
@@ -235,9 +235,9 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 		function callback_checkbox( $args ) {
 			$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 			$html  = '<fieldset>';
-			$html  .= sprintf( '<label for="wpuf-%1$s[%2$s]">', $args['section'], $args['id'] );
+			$html  .= sprintf( '<label for="timify-%1$s[%2$s]">', $args['section'], $args['id'] );
 			$html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );
-			$html  .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', $args['section'], $args['id'], checked( $value, 'on', false ) );
+			$html  .= sprintf( '<input type="checkbox" class="checkbox" id="timify-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', $args['section'], $args['id'], checked( $value, 'on', false ) );
 			$html  .= sprintf( '%1$s</label>', $args['desc'] );
 			$html  .= '</fieldset>';
 			echo wp_kses($html,$this->allowed_html_field);
@@ -254,8 +254,8 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 			$html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', $args['section'], $args['id'] );
 			foreach ( $args['options'] as $key => $label ) {
 				$checked = isset( $value[ $key ] ) ? $value[ $key ] : '0';
-				$html    .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
-				$html    .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
+				$html    .= sprintf( '<label for="timify-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
+				$html    .= sprintf( '<input type="checkbox" class="checkbox" id="timify-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $checked, $key, false ) );
 				$html    .= sprintf( '%1$s</label><br>', $label );
 			}
 			$html .= $this->get_field_description( $args );
@@ -273,13 +273,13 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 			$html  = '<fieldset>';
 			$html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', $args['section'], $args['id'] );
             $sn=1;
+			$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 			foreach ( $args['group_fields'] as $key ) {
                 $checked = isset( $value[ $key ] ) ? $value[ $key ] : '0';
                 if($sn==1){
-                    $html    .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
-                    $html    .= sprintf( '<input type="number" class="time-number" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%4$s" />', $args['section'], $args['id'], $key,$checked );
+                    $html    .= sprintf( '<label for="timify-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
+                    $html    .= sprintf( '<input type="number" class="timify-%5$s-number" id="timify-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%4$s" />', $args['section'], $args['id'], $key,$checked,$size );
                 }elseif($sn==2){
-                    $size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
                     $html  .= sprintf( '<select class="time-type" name="%1$s[%2$s][%3$s]" id="%1$s[%2$s][%3$s]">',$args['section'], $args['id'], $key );
                     foreach ( $args['options'] as $key => $label ) {
                         $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $checked, $key, false ), $label );
@@ -288,6 +288,38 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
                 }
                 $sn++;
             }
+
+			$html .= $this->get_field_description( $args );
+			$html .= '</fieldset>';
+			echo wp_kses($html,$this->allowed_html_field);
+		}
+
+		  /**
+		 * Displays a groupNumberSelect for a settings field
+		 *
+		 * @param array $args settings field args
+		 */
+		function callback_groupNumberSelect( $args ) {
+			$value = $this->get_option( $args['id'], $args['section'], $args['std'] );
+			$html  = '<fieldset>';
+			$html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', $args['section'], $args['id'] );
+            $sn=1;
+			foreach ( $args['group_fields'] as $key ) {
+                $checked = isset( $value[ $key ] ) ? $value[ $key ] : '0';
+				$size    = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
+				$step    = ( $args['step'] == '' ) ? '' : ' step="' . $args['step'] . '"';
+                if($sn<=4){
+                    $html    .= sprintf( '<input type="number" class="timify-%5$s-number" id="timify-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%4$s" %6$s />', $args['section'], $args['id'], $key,$checked,$size, $step);
+                }elseif($sn==5){
+                    $html  .= sprintf( '<select class="%4$s-type" name="%1$s[%2$s][%3$s]" id="%1$s[%2$s][%3$s]">',$args['section'], $args['id'], $key,$size );
+                    foreach ( $args['options'] as $key => $label ) {
+                        $html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $checked, $key, false ), $label );
+                    }
+                    $html .= sprintf( '</select>' );
+                }
+                $sn++;
+            }
+
 
 			$html .= $this->get_field_description( $args );
 			$html .= '</fieldset>';
@@ -304,8 +336,8 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 			$value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 			$html  = '<fieldset>';
 			foreach ( $args['options'] as $key => $label ) {
-				$html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
-				$html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
+				$html .= sprintf( '<label for="timify-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
+				$html .= sprintf( '<input type="radio" class="radio" id="timify-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
 				$html .= sprintf( '%1$s</label><br>', $label );
 			}
 			$html .= $this->get_field_description( $args );
@@ -755,6 +787,9 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
                 }
 				select#timify_settings\[time\]\[type\] {
    				 margin-top: -3px;
+				}
+				.timify-100-number{
+					width: 100px;
 				}
 
             </style>
