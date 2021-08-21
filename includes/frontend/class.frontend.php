@@ -195,7 +195,7 @@ if( !class_exists('Timify_Frontend') ):
 			
 		}
 
-		public function lm_rt_insert_after_date_in_post_mate($original_time){
+		public function lm_rt_insert_after_date_in_post_mate($original_title){
 			global $post;
 			$template_reading = $template_last_modified = $template_word = $template_view = '';
 			$rt_display_position = $this->settings['rt_display_method'];
@@ -206,12 +206,12 @@ if( !class_exists('Timify_Frontend') ):
 			$post_id = $post->ID;
 			$post_types = $this->get_data( 'lm_rt_post_types', [ 'post' ] );
 			if ( ! in_array( get_post_type( $post_id ), $post_types ) ) {
-				return $original_time;
+				return $original_title;
 			}
 
 			$disable = $this->get_meta( $post_id, '_lm_disable' );
 			if ( ! empty( $disable ) && $disable == 'yes' ) {
-				return $original_time;
+				return $original_title;
 			}
 
 			
@@ -254,19 +254,23 @@ if( !class_exists('Timify_Frontend') ):
 				$icon		  	  = !empty($this->settings['pvc_icon_class'])?'<span class="icon dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
 				$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
 			}
+            
+			if( !empty($template_last_modified) || !empty($template_reading) || !empty($template_word) || !empty($template_view) ):
+				if ( in_the_loop() && is_singular()) {
+					return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+				}elseif(in_the_loop() && is_home()){
+					return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+				}elseif(in_the_loop() && is_archive()){
+					return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
+				}else{
+					return $original_title;
+				}
+			else:
+				return $original_title;
+			endif;
 
-			if ( in_the_loop() && is_singular()) {
-				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			}elseif(in_the_loop() && is_home()){
-				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			}elseif(in_the_loop() && is_archive()){
-				return $original_time .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			}else{
-				return $original_time;
-			}
 
-
-			//return $original_time .' '.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view;
+			//return $original_title .' '.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view;
 
 
 		}
