@@ -1,21 +1,14 @@
 <?php 
 
-// global $timify_db_version;
-// $timify_db_version = '1.0';
-
-
-
 /**
  * Creating timify_post_state table when plugin active.  
  * 
  * This table contain ips which visit the post
- * @version 1.0
+ * @version 2.0.0
  */
 if( !function_exists('timify_create_table') ):
     function timify_create_table() {
         global $wpdb;
-        global $timify_db_version;
-
         $table_name = $wpdb->prefix . 'timify_post_state';	
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -31,7 +24,6 @@ if( !function_exists('timify_create_table') ):
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
             dbDelta( $sql );
 
-            //add_option( 'timify_db_version', $timify_db_version );
         }
     }
 endif;
@@ -45,7 +37,7 @@ endif;
  * 		$args[post_id] = post id;
  * 		$args[ip] = current ip;
  * 
- * @version 1.0
+ * @version 2.0.0
  */
 if( !function_exists('timify_insert_ip') ):
     function timify_insert_ip( $args = array() ) {
@@ -78,7 +70,7 @@ endif;
  * @param int $post_id
  * @param string $ip
  *
- * @version 1.0
+ * @version 2.0.0
  */
 if(!function_exists('timify_is_ip_exist')):
     function timify_is_ip_exist( $post_id = 0, $ip = 0 ){
@@ -112,7 +104,7 @@ endif;
  * @param int $post_id
  * @param string $ip
  *
- * @version 1.0
+ * @version 2.0.0
  */
 if(!function_exists('timify_get_post_view_count')):
     function timify_get_post_view_count( $post_id = 0 ) {
@@ -134,7 +126,7 @@ endif;
 
 /**
  * Utility to retrieve IP address
- * @since    0.5
+ * @since  2.0.0
  */
 
 if(!function_exists('timify_get_ip')):

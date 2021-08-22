@@ -22,6 +22,8 @@ if( !class_exists('Timify_Shortcode') ):
 			parent::__construct();
 			add_shortcode( 'timify-last-modified-date', [ $this, 'lm_render' ] );
 			add_shortcode( 'timify-post-reading-time', [ $this, 'rt_render' ] );
+			add_shortcode( 'timify-post-words-count', [ $this, 'wc_render' ] );
+			add_shortcode( 'timify-post-view-count', [ $this, 'pvc_render' ] );
 		}
 
 		/**
@@ -33,29 +35,28 @@ if( !class_exists('Timify_Shortcode') ):
 		public function lm_render( $atts ) {
 			global $post;
 			
-			if ( ! $this->is_enabled( 'lm_enable' ) ) {
+			if ( $this->settings['lm_enable'] !== 'on' ) {
 				return;
 			}
 
-			$lmposition = $this->get_data( 'lm_display_method', 'before_content' );
+			$lmposition = $this->settings['lm_display_method'];
 			if ( $lmposition !== 'shortcode_content' ) {
 				return;
 			}
 
+			$label   = $this->settings['lm_label'];
 			$post_id = $post->ID;
-			$atts = shortcode_atts( [
+			$lmatts  = shortcode_atts( [
 				'id'           => $post_id,
-			], $atts, 'timify-post-modified-info' );
+				'label'		   => $label
+			], $atts);
 
-			$get_post = get_post( absint( $atts['id'] ) );
+			$get_post = get_post( absint( $lmatts['id'] ) );
 			if ( ! $get_post ) {
 				return;
 			}
 
-			$label            = $this->settings['lm_label'];
-			$lm_alignment     = $this->settings['lm_alignment'];
-			$lm_style 		  = "style='display:block;text-align:$lm_alignment'";
-
+			
 			$modified_timestamp = get_post_modified_time( 'U' );
 			$time 				= current_time( 'U' );
 			$ago_label 			= $this->settings['ago_label'];
@@ -66,7 +67,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
 
 			if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-				$template ='<span class="timify_lm_info" ' .$lm_style. '><span class="lm-label">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="lm-date">'.$timestamp.'</span></span>';
+				$template ='<p class="timify-meta-last-modified-wrap"><span class="label">' . wp_kses( $lmatts['label'], $this->allwoed_html_kses ) . '</span> <span class="date">'.$timestamp.'</span></p>';
 			}
 
 			return $template;
@@ -83,39 +84,127 @@ if( !class_exists('Timify_Shortcode') ):
 
 			global $post;
 			
-			if ( ! $this->is_enabled( 'rt_enable' ) ) {
+			if ( $this->settings['rt_enable'] !== 'on' ) {
 				return;
 			}
 
-			$position = $this->get_data( 'rt_display_method', 'before_content' );
+			$position = $this->settings['rt_display_method'];;
 			if ( $position !== 'shortcode_content' ) {
 				return;
 			}
 
+			$label   = $this->settings['rt_label'];
 			$post_id = $post->ID;
-			$atts = shortcode_atts( [
-
+			$rtatts  = shortcode_atts( [
 				'id'     => $post_id,
+				'label'  => $label
+			], $atts);
 
-			], $atts, 'timify-post-modified-info' );
-
-			$get_post = get_post( absint( $atts['id'] ) );
+			$get_post = get_post( absint( $rtatts['id'] ) );
 			if ( ! $get_post ) {
 				return;
 			}
 
 			$this->rt_calculation( $post_id, $this->settings );
-			$label            = $this->settings['rt_label'];
 			$postfix          = $this->settings['rt_postfix'];
 			$postfixs         = $this->settings['rt_postfixs'];
-			$rt_alignment     = $this->settings['rt_alignment'];
-			$rt_style 		  = "style='display:block;text-align:$rt_alignment'";
 			$cal_postfix = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 			$rtdisable = $this->get_meta( get_the_ID(), '_rt_disable' );
 			if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
-				$template ='<span class="timify_rt_info" '.$rt_style.'><span class="rt-label rt-prefix">' . wp_kses( $label, $this->allwoed_html_kses ) . '</span> <span class="rt-time">' . esc_html( $this->reading_time ) . '</span><span class="rt-label rt-postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span></span>';
+				$template ='<p class="timify-meta-reading-wrap"><span class="label">' . wp_kses( $rtatts['label'], $this->allwoed_html_kses ) . '</span> <span class="time">' . esc_html( $this->reading_time ) . '</span><span class="postfix">' . wp_kses( $cal_postfix, $this->allwoed_html_kses ) . '</span></p>';
 			}
 
+			return $template;
+		}
+
+		/**
+		 * Callback to register shortcodes for word count.
+		 *
+		 * @param array $atts Shortcode attributes.
+		 * @return string     Shortcode output.
+		 * @since 2.0.0
+		 */
+
+		public function wc_render($atts) {
+			
+			global $post;
+			
+			if ( $this->settings['wc_enable'] !== 'on' ) {
+				return;
+			}
+		
+			$position = $this->settings['wc_display_method'];
+			if ( $position !== 'shortcode_content' ) {
+				return;
+			}
+
+			$label   = $this->settings['wc_label'];
+			$post_id = $post->ID;
+			$wcatts  = shortcode_atts( [
+				'id'     => $post_id,
+				'label'  => $label
+			], $atts);
+
+			$get_post = get_post( absint( $wcatts['id'] ) );
+			if ( ! $get_post ) {
+				return;
+			}
+
+			$content_post     = get_post($post_id);
+			$content_word 	  = $content_post->post_content;
+			$post_words_count = '<span class="words">&nbsp;'.$this->wc_calculation($content_word).'</span>';
+			$postfix          = !empty($this->settings['wc_postfix'])?'<span class="postfix">'.$this->settings['wc_postfix'].'</span>':'';
+			$icon		  	  = !empty($this->settings['wc_icon_class'])?'<span class="icon dashicons '.$this->settings['wc_icon_class'].'"></span>':'';
+			$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
+			if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
+				$template ='<p class="timify-meta-word-wrap">'.$wcatts['label'] . $post_words_count.'&nbsp;'.$postfix.'</p>';
+			}
+			
+
+			return $template;
+		}
+
+		/**
+		 * Callback to register shortcodes for post view.
+		 *
+		 * @param array $atts Shortcode attributes.
+		 * @return string     Shortcode output.
+		 * @since 2.0.0
+		 */
+
+		public function pvc_render($atts) {
+			
+			global $post;
+			
+			if ( $this->settings['pvc_enable'] !== 'on' ) {
+				return;
+			}
+		
+			$position = $this->settings['pvc_display_method'];
+			if ( $position !== 'shortcode_content' ) {
+				return;
+			}
+
+			$label   = $this->settings['pvc_label'];
+			$post_id = $post->ID;
+			$pvcatts  = shortcode_atts( [
+				'id'     => $post_id,
+				'label'  => $label
+			], $atts);
+
+			$get_post = get_post( absint( $pvcatts['id'] ) );
+			if ( ! $get_post ) {
+				return;
+			}
+
+			$post_view_count  = '<span class="views">&nbsp;'.timify_get_post_view_count().'</span>';
+			$postfix          = !empty($this->settings['pvc_postfix'])?'<span class="postfix">'.$this->settings['pvc_postfix'].'</span>':'';
+			$icon		  	  = !empty($this->settings['pvc_icon_class'])?'<span class="icon dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
+			$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
+			if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
+				$template 	  = '<p class="timify-meta-view-wrap">'. $pvcatts['label']. $post_view_count.'&nbsp;'.$postfix.'</p>';
+			}
+			
 			return $template;
 		}
 

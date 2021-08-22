@@ -139,6 +139,22 @@ trait HelperFunctions{
 		return $postfix;
 	}
 
-	
+	/**
+	 * get current theme name.
+	 * @return string
+	 * @since 2.0.0
+	 */
+	public function get_current_theme() {
+		$theme_name = '';
+		$theme      = wp_get_theme();
+		if ( isset( $theme->parent_theme ) && '' != $theme->parent_theme || null != $theme->parent_theme ) {
+			$theme_name = $theme->parent_theme;
+		} else {
+			$theme_name = $theme->name;
+		}
+		return $theme_name;
+	}
+
+
 
 }

@@ -122,7 +122,6 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'select',
 						'options'=> array( 
 							'before_content' => __( 'Before Content', 'timify' ), 
-							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'replace_original'=>__('Replace Published Date','timify'),
 							'shortcode_content'=>__('Shortcode','timify')
 						), 
@@ -156,6 +155,20 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Apply Post Type', 'timify' ),
 						'type'  => 'postTypes',
 						'default'=> array('post')
+					),
+
+					array(
+						'name'  => 'show_on',
+						'label' => __( 'Show All On', 'timify' ),
+						'type'  => 'multicheck',
+						'options'=>array(
+							'single_page'  => __( 'Single Page', 'timify' ),
+							'home_blog_page' => __( 'Home/Blog Page', 'timify' ),
+							'archive_page' => __( 'Archive Page', 'timify' ),
+						),
+						'default'=>array(
+							'single_page'=>'single_page',
+						)
 					),
 
 					array(
@@ -297,7 +310,6 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'select',
 						'options'=> array( 
 							'before_content' => __( 'Before Content', 'timify' ),
-							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'shortcode_content' => __( 'ShortCode', 'timify' ),
 						)
 					),
@@ -307,17 +319,6 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Copy Reading Time Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
 						'desc'  => '[timify-post-reading-time]'
-					),
-
-					array(
-						'name'  => 'rt_alignment',
-						'label' => __( 'Reading Time Before Content Alignment:', 'timify' ),
-						'type'  => 'select',
-						'options'=> array( 
-							'left' => __( 'Left', 'timify' ), 
-							'center'=>__('Center','timify'),
-							'right'=>__('Right','timify')
-						), 
 					),
 
 					array(
@@ -357,7 +358,6 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'select',
 						'options'=> array( 
 							'before_content' => __( 'Before Content', 'timify' ),
-							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'shortcode_content' => __( 'ShortCode', 'timify' ),
 						)
 					),
@@ -369,16 +369,6 @@ if( !class_exists('Timify_Option') ):
 						'desc'  => '[timify-post-words-count]'
 					),
 
-					array(
-						'name'  => 'wc_alignment',
-						'label' => __( 'Words Count Before Content Alignment:', 'timify' ),
-						'type'  => 'select',
-						'options'=> array( 
-							'left' => __( 'Left', 'timify' ), 
-							'center'=>__('Center','timify'),
-							'right'=>__('Right','timify')
-						), 
-					),
 					array(
 						'name'  => 'wc_icon_class',
 						'label' => __( 'Icon Class', 'timify' ),
@@ -415,7 +405,6 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'select',
 						'options'=> array( 
 							'before_content' => __( 'Before Content', 'timify' ),
-							'inside_post_meta' => __( 'Inside Post Meta', 'timify' ),  
 							'shortcode_content' => __( 'ShortCode', 'timify' ),
 						)
 					),
@@ -425,17 +414,6 @@ if( !class_exists('Timify_Option') ):
 						'label' => __( 'Copy PostView Count Shortcode Enter the Post Content', 'timify' ),
 						'type'  => 'html',
 						'desc'  => '[timify-post-view-count]'
-					),
-
-					array(
-						'name'  => 'pvc_alignment',
-						'label' => __( 'Words Count Before Content Alignment:', 'timify' ),
-						'type'  => 'select',
-						'options'=> array( 
-							'left' => __( 'Left', 'timify' ), 
-							'center'=>__('Center','timify'),
-							'right'=>__('Right','timify')
-						), 
 					),
 
 					array(
