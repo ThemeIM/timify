@@ -264,14 +264,6 @@ if( !class_exists('Timify_Frontend') ):
 					$template_view 	  = '<span class="timify-meta-view-wrap">'. $icon. $post_view_count.' '.$postfix.'</span>';
 				}
 			}
-
-			// if ( in_the_loop() && is_singular()) {
-			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			// }elseif(in_the_loop() && is_home()){
-			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			// }elseif(in_the_loop() && is_archive()){
-			// 	return $original_title .'<div class="timify-meta-wrap"><span class="timify-container">'.$template_last_modified.' '.$template_reading.' '.$template_word.' '.$template_view.'</span></div>';
-			// }
             
 			if( !empty($template_last_modified) || !empty($template_reading) || !empty($template_word) || !empty($template_view) ):
 				if ( in_the_loop() && is_singular()) {
