@@ -192,7 +192,7 @@ if( !class_exists('Timify_Option') ):
 
 					array(
 						'name'      => 'margin',
-						'label'     => __( 'Marging', 'timify' ),
+						'label'     => __( 'Margin', 'timify' ),
 						'size'      => 100,
 						'step'      => 'any',
 						'type'      => 'groupNumberSelect',
@@ -252,6 +252,12 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'color',
 						'default'=> '#000000',
 					),
+					// array(
+					// 	'name'  => 'text_color',
+					// 	'label' => __( 'Separator Color', 'timify' ),
+					// 	'type'  => 'color',
+					// 	'default'=> '#000000',
+					// ),
 
 					array(
 						'name'  => 'alignment',

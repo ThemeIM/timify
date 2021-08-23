@@ -706,6 +706,9 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
                 .timify-settings *, .timify-settings *::before, .timify-settings *::after {
                     box-sizing: border-box;
                 }
+				.timify-settings .bg_color {
+					box-sizing: inherit;
+				}
 
                 .timify-settings {
                     margin: 16px 0;
@@ -790,6 +793,9 @@ if ( ! class_exists( 'Timify_Settings_API' ) ):
 				}
 				.timify-100-number{
 					width: 100px;
+				}
+				.wp-picker-container .iris-picker {
+					box-sizing: content-box;
 				}
 
             </style>

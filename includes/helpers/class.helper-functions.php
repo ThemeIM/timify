@@ -31,6 +31,7 @@ trait HelperFunctions{
 			'class'=>[],
 			'id'=>[],
 			'a'=>[],
+			'span'=>[]
 		],
 		'label'  	=> [
 			'for'=>[],
@@ -62,6 +63,11 @@ trait HelperFunctions{
 			'id' => [],
 			'href'=>[],
 			'target'=>[]
+		],
+		'span'=>[
+			'class'  => [],
+			'id' => [],
+			'span'=>[]
 		],
 		'fieldset'=>[],
 		'br'=>[],
