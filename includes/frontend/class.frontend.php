@@ -129,18 +129,18 @@ if( !class_exists('Timify_Frontend') ):
 			$current_theme  = $this->get_current_theme();
 			$show_on  		=  !empty($this->settings['show_on'])?$this->settings['show_on']:array();
 		
-			if ( in_array( 'single_page', $show_on ) && is_singular() ) {
+			if ( in_array( 'single_page', $show_on ) && is_singular() && is_main_query() ) {
 				add_filter( 'the_content', array($this,'lm_rt_display_info'), 90 );
 			}
 
-			if ( in_array( 'home_blog_page', $show_on ) && is_home() && ! is_archive() ) {
+			if ( in_array( 'home_blog_page', $show_on ) && is_home() && ! is_archive() && is_main_query() ) {
 				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
 				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
 					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
 				}
 			}
 
-			if ( in_array( 'archive_page', $show_on ) && ! is_home() && is_archive() ) { 
+			if ( in_array( 'archive_page', $show_on ) && ! is_home() && is_archive() && is_main_query() ) { 
 				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
 				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
 					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
