@@ -305,7 +305,7 @@ if( !class_exists('Timify_Frontend') ):
 				$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
 				$label    		  = $this->settings['label_enable']==='on'?'<span class="label">'.$this->settings['pvc_label'].'</span>':'';
 				if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
-					$template_view 	  = '<li class="timify-meta-view-wrap">' .wp_kses( $label, $this->allowed_html_field ). '<span class="icon dashicons '.esc_attr($icon).'"></span>'. wp_kses( $label, $this->allowed_html_field ) . wp_kses( $post_view_count,$this->allowed_html_field ) . wp_kses( $postfix, $this->allowed_html_field ).'</li>';
+					$template_view 	  = '<li class="timify-meta-view-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>'. wp_kses( $label, $this->allowed_html_field ) . wp_kses( $post_view_count,$this->allowed_html_field ) . wp_kses( $postfix, $this->allowed_html_field ).'</li>';
 				}
 			}
             
