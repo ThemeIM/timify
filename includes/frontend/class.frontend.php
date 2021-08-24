@@ -49,7 +49,9 @@ if( !class_exists('Timify_Frontend') ):
 				'bg_color'		    => '#dddddd',
 				'display_bg'        => 'block',
 				'text_color'		=> '#000000',
+				'sp_color'          => '#212121',
 				'alignment'		    => 'center',
+				'label_enable'      => 'off',
 				'lm_enable'         => 'on',
 				'lm_label'          => 'Last Update On:',
 				'lm_display_method' => 'before_content',
@@ -84,120 +86,18 @@ if( !class_exists('Timify_Frontend') ):
 			$this->settings = wp_parse_args( get_option( 'timify_word_settings', $default_sets ), $this->settings);
 			$this->settings = wp_parse_args( get_option( 'timify_view_settings', $default_sets ), $this->settings);
 
-	
 			add_action('loop_start', array($this,'render_loop_start'), 50);
-			add_action( 'wp_enqueue_scripts', array(&$this,'render_frontend_styles') );
 			add_action( 'wp', array( $this, 'render_frontend' ) );
 			add_action( 'wp_footer', array($this,'lm_published_date_replace'), 99 );
 			add_action( 'wp_head', array($this,'pvc_insert_by_ip') );
-
-				
-		}
-
-		public function render_frontend(){
+			add_action( 'wp_enqueue_scripts', array(&$this,'render_frontend_styles') );
 			
-			$current_theme = $this->get_current_theme();
-			$show_on = $this->get_data( 'show_on', [ 'single_page' ] );
-		
-			if ( in_array( 'single_page', $show_on ) && is_singular() ) {
-				add_filter( 'the_content', array($this,'lm_rt_display_info'), 90 );
-			}
-
-			if ( in_array( 'home_blog_page', $show_on ) && is_home() && ! is_archive() ) {
-				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
-				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
-					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
-				}
-			}
-
-			if ( in_array( 'archive_page', $show_on ) && ! is_home() && is_archive() ) { 
-				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
-				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
-					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
-				}
-			}
-
-		}
-
-		public function render_frontend_styles() {
-			wp_register_style( 'timify-style', false );
-			wp_enqueue_style( 'timify-style' );
-			$css = array();
-			$css[] = ".timify-meta-wrap { 
-				font-size: {$this->settings['font_size']}px;
-				line-height: {$this->settings['line_height']}px;
-				text-align: {$this->settings['alignment']};
-				margin-top: {$this->settings['margin']['top']}{$this->settings['margin']['type']};
-				margin-right: {$this->settings['margin']['right']}{$this->settings['margin']['type']};
-				margin-bottom: {$this->settings['margin']['bottom']}{$this->settings['margin']['type']};
-				margin-left: {$this->settings['margin']['left']}{$this->settings['margin']['type']};
-			}";
-			$css[] = ".timify-container {
-				background:{$this->settings['bg_color']};
-				color: {$this->settings['text_color']};
-				padding-top: {$this->settings['padding']['top']}{$this->settings['padding']['type']};
-				padding-right: {$this->settings['padding']['right']}{$this->settings['padding']['type']};
-				padding-bottom: {$this->settings['padding']['bottom']}{$this->settings['padding']['type']};
-				padding-left: {$this->settings['padding']['left']}{$this->settings['padding']['type']};
-				display: {$this->settings['display_bg']};
-				margin:0;
-				list-style:none;
-			}";
-			$css[] =".timify-meta-last-modified-wrap,
-			.timify-meta-reading-wrap,
-			.timify-meta-word-wrap,
-			.timify-meta-view-wrap {
-				display:inline-block;
-				padding-right: 8px;
-				margin-right: 8px;
-				position: relative;
-			}";
-			$css[] =".timify-meta-last-modified-wrap:before,
-			.timify-meta-reading-wrap:before,
-			.timify-meta-word-wrap:before,
-			.timify-meta-view-wrap:before {
-				position: absolute;
-				height: 22px;
-				width: 2px;
-				background: red;
-				content: '';
-				right: 0;
-				opacity: 0.2;
-			}";
-			$css[] =".timify-container li:last-child:before {
-				content:inherit;
-			}";
-			// $css[] =".timify-container .dashicons {
-				
-			// }";
-
-
-			// $css[] =".timify-container li span {
-			// 	margin:2px;
-			// }";
-			// $css[] =".timify-container li:last-child {
-			// 	border-right-width: 0;
-			// 	padding-right: 0;
-			// }";
-
-			// $css[] =".timify-container .dashicons {
-			// 	font-size: {$this->settings['font_size']}px;
-			// 	line-height: {$this->settings['line_height']}px;
-			// 	width: {$this->settings['font_size']}px;
-			// 	height: {$this->settings['font_size']}px;
-			// }";
-			wp_add_inline_style( 'timify-style', preg_replace( '/\n|\t/i', '', implode( '', $css ) ));
 		}
 		
-		public function pvc_insert_by_ip() {
-			global $post;
-			if ( ! wp_is_post_revision( $post ) && ! is_preview() ) {
-				if ( is_single() ) {
-					timify_insert_ip();
-				}
-			}
-		}
-
+		/**
+		 * date filter hook fire when loop start in post.
+		 * @since 2.0.0
+		 */
 		public function render_loop_start() {
 			$list_filter_array = array();
 			if ( isset($this->settings['active']['date']) ):
@@ -220,6 +120,34 @@ if( !class_exists('Timify_Frontend') ):
 
 		}
 
+		/**
+		 * the_content and get_the_excerpt filter hook fire in settings show on page.
+		 * @since 2.0.0
+		 */
+		public function render_frontend(){
+			
+			$current_theme  = $this->get_current_theme();
+			$show_on  		=  !empty($this->settings['show_on'])?$this->settings['show_on']:array();
+		
+			if ( in_array( 'single_page', $show_on ) && is_singular() ) {
+				add_filter( 'the_content', array($this,'lm_rt_display_info'), 90 );
+			}
+
+			if ( in_array( 'home_blog_page', $show_on ) && is_home() && ! is_archive() ) {
+				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
+				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
+					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
+				}
+			}
+
+			if ( in_array( 'archive_page', $show_on ) && ! is_home() && is_archive() ) { 
+				add_filter( 'get_the_excerpt', array( $this, 'lm_rt_display_info' ), 1000 );
+				if ( 'Twenty Twenty' === $current_theme || 'Twenty Fifteen' === $current_theme || 'Twenty Nineteen' === $current_theme || 'Twenty Thirteen' === $current_theme || 'Twenty Fourteen' === $current_theme || 'Twenty Sixteen' === $current_theme || 'Twenty Seventeen' === $current_theme || 'Twenty Twelve' === $current_theme ) {
+					add_filter( 'the_content', array( $this, 'lm_rt_display_info' ), 1000 );
+				}
+			}
+
+		}
 
 		/**
 		 * Published date to modified Date replace using jQuery.
@@ -289,6 +217,18 @@ if( !class_exists('Timify_Frontend') ):
 			<?php
 		}
 
+		/**
+		 * add post view count by ip address.
+		 * @since 2.0.0
+		 */
+		public function pvc_insert_by_ip() {
+			global $post;
+			if ( ! wp_is_post_revision( $post ) && ! is_preview() ) {
+				if ( is_single() ) {
+					timify_insert_ip();
+				}
+			}
+		}
 
 		/**
 		 * Show last modified date and reading time info.
@@ -297,6 +237,7 @@ if( !class_exists('Timify_Frontend') ):
 		 * @return string $content  Filtered Content
 		 */
 		public function lm_rt_display_info( $content ) {
+	
 			global $post;
 			$template_reading = $template_last_modified = $template_word = $template_view = '';
 			$lm_display_position  = $this->settings['lm_display_method'];
@@ -318,12 +259,12 @@ if( !class_exists('Timify_Frontend') ):
 				$modified_timestamp = get_post_modified_time( 'U');
 				$time = current_time( 'U' );
 				$ago_label = $this->settings['ago_label'];
-				$lm_label  = $this->settings['lm_label'];
 				$icon	   = $this->settings['lm_icon_class'];
 				$timestamp = human_time_diff( $modified_timestamp, $time ).'&nbsp;'.$ago_label;
 				$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
+				$label     = $this->settings['label_enable']==='on'?'<span class="label">'.$this->settings['lm_label'].'</span>':'';
 				if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-					$template_last_modified = '<li class="timify-meta-last-modified-wrap"><span class="label">'.esc_html($lm_label).'</span><span class="icon dashicons '.esc_attr($icon).'"></span><span class="time">'.esc_html($timestamp).'</span></li>';
+					$template_last_modified = '<li class="timify-meta-last-modified-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>' . wp_kses( $label, $this->allowed_html_field ) . '<span class="time">'.esc_html($timestamp).'</span></li>';
 				}
 			}
 
@@ -336,8 +277,9 @@ if( !class_exists('Timify_Frontend') ):
 				$cal_postfix	  = $this->add_postfix_reading_time( $this->reading_time, $postfixs, $postfix );
 				$icon		      = $this->settings['rt_icon_class'];
 				$rtdisable 		  = $this->get_meta( get_the_ID(), '_rt_disable' );
+				$label    		  = $this->settings['label_enable']==='on'?'<span class="label">'.$this->settings['rt_label'].'</span>':'';
 				if ( empty( $rtdisable ) || ! empty( $rtdisable ) && $rtdisable == 'no' ) {
-					$template_reading = '<li class="timify-meta-reading-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span><span class="reading">'.esc_html($reading_time).'</span><span class="postfix">'.esc_html($cal_postfix).'</span></li>';
+					$template_reading = '<li class="timify-meta-reading-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>' . wp_kses( $label, $this->allowed_html_field ) . '<span class="reading">'.esc_html($reading_time).'</span><span class="postfix">'.esc_html($cal_postfix).'</span></li>';
 				}
 			}
 
@@ -349,8 +291,9 @@ if( !class_exists('Timify_Frontend') ):
 				$postfix          = !empty($this->settings['wc_postfix'])?'<span class="postfix">'.esc_html($this->settings['wc_postfix']).'</span>':'';
 				$icon		  	  = $this->settings['wc_icon_class'];
 				$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
+				$label    		  = $this->settings['label_enable']==='on'?'<span class="label">'.$this->settings['wc_label'].'</span>':'';
 				if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
-					$template_word    = '<li class="timify-meta-word-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>'. wp_kses( $post_words_count,$this->allowed_html_field ) . wp_kses( $postfix,$this->allowed_html_field ).'</li>';
+					$template_word    = '<li class="timify-meta-word-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>'.wp_kses( $label, $this->allowed_html_field ). wp_kses( $post_words_count,$this->allowed_html_field ) . wp_kses( $postfix,$this->allowed_html_field ).'</li>';
 				}
 			}
 
@@ -360,8 +303,9 @@ if( !class_exists('Timify_Frontend') ):
 				$postfix          = !empty($this->settings['pvc_postfix'])?'<span class="postfix">'.esc_html($this->settings['pvc_postfix']).'</span>':'';
 				$icon		  	  = $this->settings['pvc_icon_class'];
 				$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
+				$label    		  = $this->settings['label_enable']==='on'?'<span class="label">'.$this->settings['pvc_label'].'</span>':'';
 				if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
-					$template_view 	  = '<li class="timify-meta-view-wrap"><span class="icon dashicons '.esc_attr($icon).'"></span>'. wp_kses( $post_view_count,$this->allowed_html_field ) . wp_kses( $postfix, $this->allowed_html_field ).'</li>';
+					$template_view 	  = '<li class="timify-meta-view-wrap">' .wp_kses( $label, $this->allowed_html_field ). '<span class="icon dashicons '.esc_attr($icon).'"></span>'. wp_kses( $label, $this->allowed_html_field ) . wp_kses( $post_view_count,$this->allowed_html_field ) . wp_kses( $postfix, $this->allowed_html_field ).'</li>';
 				}
 			}
             
@@ -373,6 +317,78 @@ if( !class_exists('Timify_Frontend') ):
 			endif;
 		
 			return apply_filters( 'timify_post_content_output', $content, get_the_ID() );
+		}
+
+		/**
+		 * add frontend style inline css in header 
+		 * @since 2.0.0
+		 */
+		public function render_frontend_styles() {
+			wp_register_style( 'timify-style', false );
+			wp_enqueue_style( 'timify-style' );
+			$css = array();
+			$css[] = ".timify-meta-wrap { 
+				font-size: {$this->settings['font_size']}px;
+				line-height: {$this->settings['line_height']}px;
+				text-align: {$this->settings['alignment']};
+				margin-top: {$this->settings['margin']['top']}{$this->settings['margin']['type']};
+				margin-right: {$this->settings['margin']['right']}{$this->settings['margin']['type']};
+				margin-bottom: {$this->settings['margin']['bottom']}{$this->settings['margin']['type']};
+				margin-left: {$this->settings['margin']['left']}{$this->settings['margin']['type']};
+			}";
+
+			$css[] = ".timify-container {
+				background:{$this->settings['bg_color']};
+				color: {$this->settings['text_color']};
+				padding-top: {$this->settings['padding']['top']}{$this->settings['padding']['type']};
+				padding-right: {$this->settings['padding']['right']}{$this->settings['padding']['type']};
+				padding-bottom: {$this->settings['padding']['bottom']}{$this->settings['padding']['type']};
+				padding-left: {$this->settings['padding']['left']}{$this->settings['padding']['type']};
+				display: {$this->settings['display_bg']};
+				margin:0;
+				list-style:none;
+			}";
+
+			$css[] =".timify-container .timify-meta-last-modified-wrap,
+			.timify-container .timify-meta-reading-wrap,
+			.timify-container .timify-meta-word-wrap,
+			.timify-container .timify-meta-view-wrap {
+				display:inline-block;
+				padding-right: 8px;
+				margin-right: 4px;
+				position: relative;
+			}";
+
+			$css[] =".timify-container .timify-meta-last-modified-wrap:before,
+			.timify-container .timify-meta-reading-wrap:before,
+			.timify-container .timify-meta-word-wrap:before,
+			.timify-container .timify-meta-view-wrap:before {
+				position: absolute;
+				height: 22px;
+				width: 2px;
+				background: {$this->settings['sp_color']};
+				content: '';
+				right: 0;
+				opacity: 0.2;
+			}";
+
+			$css[] =".timify-container li:last-child:before {
+				content:inherit;
+			}";
+
+			$css[] =".timify-container li .words, 
+			.timify-container li .reading, 
+			.timify-container li .views,
+			.timify-container li .label {
+				display: inline-block;
+				padding: 0 4px;
+			}";
+
+			$css[] =".timify-container li .time {
+				padding-left: 4px;
+			}";
+
+			wp_add_inline_style( 'timify-style', preg_replace( '/\n|\t/i', '', implode( '', $css ) ));
 		}
 
 

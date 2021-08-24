@@ -67,7 +67,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$lmdisable = $this->get_meta( get_the_ID(), '_lm_disable' );
 
 			if ( empty( $lmdisable ) || ! empty( $lmdisable ) && $lmdisable == 'no' ) {
-				$template ='<p class="timify-meta-last-modified-wrap"><span class="label">' . wp_kses( $lmatts['label'], $this->allwoed_html_kses ) . '</span> <span class="date">'.$timestamp.'</span></p>';
+				$template ='<p class="timify-meta-last-modified-wrap"><span class="label">' . wp_kses( $lmatts['label'], $this->allwoed_html_kses ) . '</span> <span class="date">'.esc_html($timestamp).'</span></p>';
 			}
 
 			return $template;
@@ -157,7 +157,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$icon		  	  = !empty($this->settings['wc_icon_class'])?'<span class="icon dashicons '.$this->settings['wc_icon_class'].'"></span>':'';
 			$wcdisable 		  = $this->get_meta( get_the_ID(), '_wc_disable' );
 			if ( empty( $wcdisable ) || ! empty( $wcdisable ) && $wcdisable == 'no' ) {
-				$template ='<p class="timify-meta-word-wrap">'.$wcatts['label'] . $post_words_count.'&nbsp;'.$postfix.'</p>';
+				$template ='<p class="timify-meta-word-wrap">'.esc_html($wcatts['label']) . wp_kses($post_words_count,$this->allowed_html_field).'&nbsp;'.wp_kses($postfix,$this->allowed_html_field).'</p>';
 			}
 			
 
@@ -202,7 +202,7 @@ if( !class_exists('Timify_Shortcode') ):
 			$icon		  	  = !empty($this->settings['pvc_icon_class'])?'<span class="icon dashicons '.$this->settings['pvc_icon_class'].'"></span>':'';
 			$pvcdisable 	  = $this->get_meta( get_the_ID(), '_pvc_disable' );
 			if ( empty( $pvcdisable ) || ! empty( $pvcdisable ) && $pvcdisable == 'no' ) {
-				$template 	  = '<p class="timify-meta-view-wrap">'. $pvcatts['label']. $post_view_count.'&nbsp;'.$postfix.'</p>';
+				$template 	  = '<p class="timify-meta-view-wrap">'. esc_html($pvcatts['label']). wp_kses($post_view_count,$this->allowed_html_field).'&nbsp;'.wp_kses($postfix,$this->allowed_html_field).'</p>';
 			}
 			
 			return $template;

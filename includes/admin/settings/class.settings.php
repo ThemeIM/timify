@@ -172,6 +172,13 @@ if( !class_exists('Timify_Option') ):
 					),
 
 					array(
+						'name'  => 'label_enable',
+						'label' => __( 'Label Enable', 'timify' ),
+						'type'  => 'checkbox',
+						'default'=> 'off'
+					),
+
+					array(
 						'name'  => 'font_size',
 						'label' => __( 'Font Size', 'timify' ),
 						'size'  => 100,
@@ -252,12 +259,12 @@ if( !class_exists('Timify_Option') ):
 						'type'  => 'color',
 						'default'=> '#000000',
 					),
-					// array(
-					// 	'name'  => 'text_color',
-					// 	'label' => __( 'Separator Color', 'timify' ),
-					// 	'type'  => 'color',
-					// 	'default'=> '#000000',
-					// ),
+					array(
+						'name'  => 'sp_color',
+						'label' => __( 'Separator Color', 'timify' ),
+						'type'  => 'color',
+						'default'=> '#212121',
+					),
 
 					array(
 						'name'  => 'alignment',
