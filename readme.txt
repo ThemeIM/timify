@@ -83,4 +83,4 @@ Yes, it does. Just navigate the settings menu and select from the dropdown menu 
 = 1.0.1 =
 * Fix broken content issue.
 = 2.0.0 =
-* add word count,individual post view count and individual setting options
+* add word count, post view count and individual setting options
