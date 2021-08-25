@@ -1,6 +1,6 @@
 === Timify ===
 Contributors: ThemeIM, golam523
-Tags: reading time, last-modified, modified time, word count, date
+Tags: reading time, post view count, modified time, word count, date
 Requires at least: 4.0
 Tested up to: 5.8
 Requires PHP: 5.6.0
@@ -70,6 +70,26 @@ Just navigate to the Timify settings page and select “Apply Post Type” to yo
 = Does the Timify Plugin support shortcodes? =
 Yes, it does. Just navigate the settings menu and select from the dropdown menu in “Reading Time Display Method” and “Last Modified Time Display Method” option.
 
+= How can I only display reading time on single posts?
+There are settings for enabling each option's visibility in post page.
+
+= How do I insert reading time before posts?
+Setting for display postion can be found in Reading Time section on plugin settings. 
+
+= Is that possible to enable or disable for displaying labels?
+Yes! you can enable or disable evry label display for each labels.
+
+= Can I change the icons for each option?
+Yes. There is an icon class text-box for each section, you can put your desired dashicon class there.
+
+= How do I redesign the frontend css?
+There are settings for changing the frontend look in each option.
+
+= How does the view count works for post pages?
+Every views from different IP's are counted as a new view.
+
+= I have a question.
+Please contact us at support@themeim.com 
 
 == Screenshots ==
 1. Timify settings
