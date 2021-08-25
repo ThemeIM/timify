@@ -122,7 +122,7 @@ if( !class_exists('Timify_Shortcode') ):
 		 *
 		 * @param array $atts Shortcode attributes.
 		 * @return string     Shortcode output.
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 
 		public function wc_render($atts) {
@@ -169,7 +169,7 @@ if( !class_exists('Timify_Shortcode') ):
 		 *
 		 * @param array $atts Shortcode attributes.
 		 * @return string     Shortcode output.
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 
 		public function pvc_render($atts) {

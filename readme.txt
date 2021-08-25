@@ -4,7 +4,7 @@ Tags: reading time, last-modified, modified time, word count, date
 Requires at least: 4.0
 Tested up to: 5.8
 Requires PHP: 5.6.0
-Stable tag: 2.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,5 +84,5 @@ Yes, it does. Just navigate the settings menu and select from the dropdown menu 
 * Initial release
 = 1.0.1 =
 * Fix broken content issue.
-= 2.0.0 =
+= 1.1.0 =
 * add word count, post view count and individual setting options

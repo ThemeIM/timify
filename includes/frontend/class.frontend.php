@@ -96,7 +96,7 @@ if( !class_exists('Timify_Frontend') ):
 		
 		/**
 		 * date filter hook fire when loop start in post.
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 		public function render_loop_start() {
 			$list_filter_array = array();
@@ -122,7 +122,7 @@ if( !class_exists('Timify_Frontend') ):
 
 		/**
 		 * the_content and get_the_excerpt filter hook fire in settings show on page.
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 		public function render_frontend(){
 			
@@ -219,7 +219,7 @@ if( !class_exists('Timify_Frontend') ):
 
 		/**
 		 * add post view count by ip address.
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 		public function pvc_insert_by_ip() {
 			global $post;
@@ -321,7 +321,7 @@ if( !class_exists('Timify_Frontend') ):
 
 		/**
 		 * add frontend style inline css in header 
-		 * @since 2.0.0
+		 * @since 1.1.0
 		 */
 		public function render_frontend_styles() {
 			wp_register_style( 'timify-style', false );
